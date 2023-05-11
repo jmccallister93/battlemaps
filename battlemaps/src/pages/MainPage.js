@@ -1,4 +1,5 @@
-import BaseModel from "../components/BaseModel";
+import PhaserScene from "../components/PhaserScene";
+
 
 const MainPage = (props) => {
   return (
@@ -6,8 +7,8 @@ const MainPage = (props) => {
       <h1>Welcome to Battlemaps</h1>
       <h2>Where you can generate Battlemaps based on your specific needs</h2>
       <h1>Tune settings here</h1>
-      <h1>Image will display here</h1>
-      <BaseModel />
+      <PhaserScene/>
+      
     </>
   );
 };
