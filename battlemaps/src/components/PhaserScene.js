@@ -51,6 +51,10 @@ const PhaserScene = (props) => {
             ["grass", "dirt1", "grass", "dirt1", "grass"],
             ["grass", "dirt1", "dirt1", "dirt1", "grass"],
             ["grass", "grass", "dirt1", "grass", "grass"],
+            ["grass", "grass", "dirt1", "dirt1", "grass"],
+            ["grass", "grass", "dirt1", "grass", "dirt1"],
+            ["grass", "dirt1", "dirt1", "grass", "grass"],
+            ["grass", "grass", "dirt1", "grass", "grass"],
           ];
 
           for (let row = 0; row < numTiles; row++) {
