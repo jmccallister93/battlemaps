@@ -24,6 +24,7 @@ import grass8Image from "../assets/grass/grass8.png";
 import grass9Image from "../assets/grass/grass9.png";
 
 import grass11Image from "../assets/grass/grass11.png";
+import grass12Image from "../assets/grass/grass12.png"
 
 const PhaserScene = (props) => {
   const phaserContainerRef = useRef(null);
@@ -58,6 +59,7 @@ const PhaserScene = (props) => {
         this.load.image("grass9", grass9Image);
      
         this.load.image("grass11", grass11Image);
+        this.load.image("grass12", grass12Image);
       }
 
       create() {
@@ -72,15 +74,16 @@ const PhaserScene = (props) => {
         //Set grass tiles arrays
         const grassTiles = [
           "grass1",
-          "grass2",
-          "grass3",
-          "grass4",
-          "grass5",
-          "grass6",
-          "grass7",
-          "grass8",
-          "grass9",
-          "grass11",
+        //   "grass2",
+        //   "grass3",
+        //   "grass4",
+        //   "grass5",
+        //   "grass6",
+        //   "grass7",
+        //   "grass8",
+        //   "grass9",
+        //   "grass11",
+          "grass12"
         ];
         const dirtTiles = [
           "dirt1",
