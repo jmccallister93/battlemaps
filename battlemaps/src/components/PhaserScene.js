@@ -7,6 +7,8 @@ import grass21 from "../assets/Grass/Grass_21-128x128.png"
 import dirt1 from "../assets/Dirt/Dirt_01-128x128.png"
 import dirt2 from "../assets/Dirt/Dirt_02-128x128.png"
 import dirt9  from "../assets/Dirt/Dirt_09-128x128.png"
+import treeTop1 from "../assets/TreeTops/Tree - Isometric - Small - Green 2.png"
+import bareTree1 from "../assets/TreeTops/Bare tree - Large A.png"
 
 
 const PhaserScene = (props) => {
@@ -26,7 +28,8 @@ const PhaserScene = (props) => {
         this.load.image("grass5", grass5);
         this.load.image("grass8", grass8);
         this.load.image("grass21", grass21);
-      
+        this.load.image("treeTop1", treeTop1);
+        this.load.image("bareTree1", bareTree1)
       }
 
       create() {
@@ -42,30 +45,16 @@ const PhaserScene = (props) => {
         const grassTiles = [
           "grass5",
           "grass8",
-          "grass21"
-        //   "grass3",
-        //   "grass4",
-        //   "grass5",
-        //   "grass6",
-        //   "grass7",
-        //   "grass8",
-        //   "grass9",
-        //   "grass11",
-          // "grass12"
+          "grass21",
         ];
         const dirtTiles = [
           "dirt1",
           "dirt2",
-          "dirt9"
-          // "dirt3",
-          // "dirt4",
-          // "dirt5",
-          // "dirt6",
-          // "dirt7",
-          // "dirt8",
-          // "dirt9",
-          // "dirt11",
+          "dirt9",
         ];
+
+        const assetSize = 256
+        const assetScale = tileSize / assetSize; // Calculate the scale
 
         const sketch = new p5();
         for (let row = 0; row < numTiles; row++) {
@@ -85,8 +74,15 @@ const PhaserScene = (props) => {
               }
           
               this.add.image(tileX, tileY, tileType).setOrigin(0);
+
+              //Assets
+              if (Math.random() < 0.01) { // 10% chance to place an asset on each tile
+                // this.add.image(tileX , tileY , "treeTop1").setOrigin(1);
+                this.add.image(tileX, tileY, "treeTop1").setOrigin(1).setScale(assetScale);
+              }
             }
           }
+          
       }
     }
     // Create a new Phaser game instance
