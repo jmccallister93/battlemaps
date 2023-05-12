@@ -1,14 +1,23 @@
 import React, { useRef, useEffect } from "react";
 import Phaser from "phaser";
 import p5 from "p5";
-import grass5 from "../assets/Grass/Grass_05-128x128.png";
-import grass8 from "../assets/Grass/Grass_08-128x128.png";
-import grass21 from "../assets/Grass/Grass_21-128x128.png";
-import dirt1 from "../assets/Dirt/Dirt_01-128x128.png";
-import dirt2 from "../assets/Dirt/Dirt_02-128x128.png";
-import dirt9 from "../assets/Dirt/Dirt_09-128x128.png";
+import grass5 from "../assets/GrassTile/Grass_05-128x128.png";
+import grass8 from "../assets/GrassTile/Grass_08-128x128.png";
+import grass21 from "../assets/GrassTile/Grass_21-128x128.png";
+import dirt1 from "../assets/DirtTile/Dirt_01-128x128.png";
+import dirt2 from "../assets/DirtTile/Dirt_02-128x128.png";
+import dirt9 from "../assets/DirtTile/Dirt_09-128x128.png";
 import treeTop1 from "../assets/TreeTops/Tree - Isometric - Small - Green 2.png";
 import bareTree1 from "../assets/TreeTops/Bare tree - Large A.png";
+import mossyBoulder1 from "../assets/ForestFloor/Mossy Boulder 1 - Green 1.png"
+import rock1 from "../assets/Camp/Rock, 1.png"
+import rock2 from "../assets/Camp/Rock, 2.png"
+import rock3 from "../assets/Camp/Rock, 3.png"
+import rock4 from "../assets/Camp/Rock, outcrop.png"
+import rock5 from "../assets/Camp/Rock, small, 1.png"
+import rock6 from "../assets/Camp/Rock, small, 2.png"
+
+
 
 const PhaserScene = (props) => {
   const phaserContainerRef = useRef(null);
@@ -29,6 +38,13 @@ const PhaserScene = (props) => {
         this.load.image("grass21", grass21);
         this.load.image("treeTop1", treeTop1);
         this.load.image("bareTree1", bareTree1);
+        this.load.image("mossyBoulder1", mossyBoulder1);
+        this.load.image("rock1", rock1)
+        this.load.image("rock2", rock2)
+        this.load.image("rock3", rock3)
+        this.load.image("rock4", rock4)
+        this.load.image("rock5", rock5)
+        this.load.image("rock6", rock6)
       }
 
       create() {
@@ -40,12 +56,16 @@ const PhaserScene = (props) => {
 
         this.cameras.main.setSize(800, 800); // Set the size of the camera to match the scene
 
-        //Set grass tiles arrays
+        //Set Asset Arrays
         const grassTiles = ["grass5", "grass8", "grass21"];
         const dirtTiles = ["dirt1", "dirt2", "dirt9"];
+        const rockAssets = ["rock1", "rock2","rock3","rock4","rock5","rock6",]
 
+        //Set Asset Sizing
         const assetSize = 256;
-        const assetScale = tileSize / assetSize; // Calculate the scale
+        const assetBaseScale = tileSize / assetSize; // Calculate the scale
+        const scaleVariation = 0.3; // The maximum amount the scale can vary from the base
+
 
         const sketch = new p5();
         for (let row = 0; row < numTiles; row++) {
@@ -62,18 +82,38 @@ const PhaserScene = (props) => {
             if (terrainNoise < 0.5) {
               const textureIndex = Math.floor(textureNoise * grassTiles.length);
               tileType = grassTiles[textureIndex];
-              //Assets
+              //Tree Assets
               if (Math.random() < 0.05) {
-                // 10% chance to place an asset on each tile
+                const randomScale = assetBaseScale + Math.random() * scaleVariation - (scaleVariation / 2);
                 this.add
                   .image(tileX, tileY, "treeTop1")
                   .setOrigin(0)
-                  .setScale(assetScale)
+                  .setScale(randomScale)
+                  .setDepth(1)
+              }
+              if (Math.random() < 0.01) {
+                this.add
+                  .image(tileX, tileY, "mossyBoulder1")
+                  .setOrigin(0)
+                  .setScale(assetBaseScale * 2)
                   .setDepth(1)
               }
             } else {
               const textureIndex = Math.floor(textureNoise * dirtTiles.length);
               tileType = dirtTiles[textureIndex];
+              //Rock Assets
+              rockAssets.forEach((rockAsset) => {
+                if (Math.random() < 0.01) {
+                  const randomRotation = Math.random() * 360;
+                  const randomScale = assetBaseScale + Math.random() * scaleVariation - (scaleVariation / 2);
+                  this.add
+                    .image(tileX, tileY, rockAsset)
+                    .setOrigin(0)
+                    .setScale(randomScale)
+                    .setDepth(1)
+                    .setAngle(randomRotation);
+                }
+              });
             }
 
             this.add.image(tileX, tileY, tileType).setOrigin(0);
