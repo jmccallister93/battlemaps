@@ -1,26 +1,25 @@
 import React, { useRef, useEffect, useState } from "react";
 import Phaser from "phaser";
 import p5 from "p5";
-
-import grass5 from "../assets/GrassTile/grassTileMain.png";
+import grass5 from "../assets/GrassTile/Grass_05-128x128.png";
 import grass8 from "../assets/GrassTile/Grass_08-128x128.png";
 import grass21 from "../assets/GrassTile/Grass_21-128x128.png";
 import grassCorner5 from "../assets/GrassTile/grass05_corner_blend.png";
 import grassEdge5 from "../assets/GrassTile/grass05_left_blend.png";
-
 import dirt1 from "../assets/DirtTile/Dirt_01-128x128.png";
 import dirt2 from "../assets/DirtTile/Dirt_02-128x128.png";
-import dirt9 from "../assets/DirtTile/dirtTileMain.png";
-
-import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
-import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
-import treeTop3 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 5 S.png";
-import treeTop4 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 6 S.png";
-
-import rock5 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Rock 5 S.png"
-// import rock6 from "../assets/Riverwood Assets Free Pack/Riverwood Assets/Rock 6.png"
-// import rock13 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Rock 13 S - Copy.jpg"
-
+import dirt9 from "../assets/DirtTile/Dirt_09-128x128.png";
+import treeTop1 from "../assets/TreeTops/Tree - Isometric - Small - Green 2.png";
+import treeTop2 from "../assets/TreeTops/Tree - Isometric - Small - Green 2.png";
+import treeTop3 from "../assets/TreeTops/Tree - Isometric - Small - Green 3.png";
+import bareTree1 from "../assets/TreeTops/Bare tree - Large A.png";
+import mossyBoulder1 from "../assets/ForestFloor/Mossy Boulder 1 - Green 1.png";
+import rock1 from "../assets/Camp/Rock, 1.png";
+import rock2 from "../assets/Camp/Rock, 2.png";
+import rock3 from "../assets/Camp/Rock, 3.png";
+import rock4 from "../assets/Camp/Rock, outcrop.png";
+import rock5 from "../assets/Camp/Rock, small, 1.png";
+import rock6 from "../assets/Camp/Rock, small, 2.png";
 import foliage1 from "../assets/ForestFloor/Foliage 1 - Green 1.png";
 import foliage2 from "../assets/ForestFloor/Foliage 2 - Green 1.png";
 import foliage3 from "../assets/ForestFloor/Foliage 3 - Green 1.png";
@@ -29,22 +28,19 @@ import foliage5 from "../assets/ForestFloor/Foliage 5 - Green 1.png";
 import foliage6 from "../assets/ForestFloor/Foliage 6 - Green 1.png";
 import foliage9 from "../assets/ForestFloor/Foliage 9 - Green 1.png";
 import foliage10 from "../assets/ForestFloor/Foliage 10 - Green 1.png";
-
-import bush1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Bush 1 S.png";
-import bush2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Berry Bush 1 S.png";
-import bush3 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Berry Bush 2 S.png";
-
+import bush1 from "../assets/ForestFloor/Bush 1 - Red.png";
+import bush2 from "../assets/ForestFloor/Bush 2 - Green 1.png";
+import bush3 from "../assets/ForestFloor/Bush 3 - Green 3.png";
 import bush4 from "../assets/ForestFloor/Bush 4 - Green 2.png";
 import bush5 from "../assets/ForestFloor/Bush 5 - Green 1.png";
 import bush6 from "../assets/ForestFloor/Bush 6 - Green 3.png";
 import bush7 from "../assets/ForestFloor/Bush 7 - Green 1.png";
 import bush9 from "../assets/ForestFloor/Bush 9 - Yellow.png";
+import fern1 from "../assets/ForestFloor/Fern 1 - Green 3.png";
 
-import fern1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 1 S.png";
-import fern2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 2 S.png";
-import fern3 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 5 S.png";
-// import fern4 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Small Plant 1 S.png";
-// import fern5 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Small Plant 15 S.png";
+import fern3 from "../assets/ForestFloor/Fern 3 - Green 1.png";
+import fern4 from "../assets/ForestFloor/Fern 4 - Green 1.png";
+import fern5 from "../assets/ForestFloor/Fern 5 - Green 3.png";
 
 import flower5 from "../assets/ForestFloor/Flower 5 - Green 3.png";
 import flower6 from "../assets/ForestFloor/Flower 6 - Green 3.png";
@@ -54,8 +50,6 @@ import flowers2 from "../assets/ForestFloor/Flowers 2.png";
 import flowers3 from "../assets/ForestFloor/Flowers 3.png";
 
 import flowers5 from "../assets/ForestFloor/Flowers 5.png";
-
-
 
 const PhaserScene = (props) => {
   const phaserContainerRef = useRef(null);
@@ -83,11 +77,16 @@ const PhaserScene = (props) => {
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
         this.load.image("treeTop3", treeTop3);
-        this.load.image("treeTop4", treeTop4);
+        this.load.image("bareTree1", bareTree1);
 
+        this.load.image("mossyBoulder1", mossyBoulder1);
+
+        this.load.image("rock1", rock1);
+        this.load.image("rock2", rock2);
+        this.load.image("rock3", rock3);
+        this.load.image("rock4", rock4);
         this.load.image("rock5", rock5);
-        // this.load.image("rock6", rock6);
-        // this.load.image("rock13", rock13);
+        this.load.image("rock6", rock6);
 
         this.load.image("foliage1", foliage1);
         this.load.image("foliage2", foliage2);
@@ -109,7 +108,8 @@ const PhaserScene = (props) => {
 
         this.load.image("fern1", fern1);
         this.load.image("fern3", fern3);
-        this.load.image("fern2", fern2);
+        this.load.image("fern4", fern4);
+        this.load.image("fern5", fern5);
 
         this.load.image("flower5", flower5);
         this.load.image("flower6", flower6);
@@ -118,7 +118,6 @@ const PhaserScene = (props) => {
         this.load.image("flowers2", flowers2);
         this.load.image("flowers3", flowers3);
         this.load.image("flowers5", flowers5);
-
       }
 
       create() {
@@ -135,29 +134,23 @@ const PhaserScene = (props) => {
         //Set Tiles Arrays
         const grassTiles = [
           "grass5",
-          // "grass8",
-          // "grass21",
-          // "grassCorner5",
-          // "grassEdge5",
+          "grass8",
+          "grass21",
+          "grassCorner5",
+          "grassEdge5",
         ];
-        const dirtTiles = [
-          // "dirt1", 
-          // "dirt2", 
-          "dirt9"
-        ];
+        const dirtTiles = ["dirt1", "dirt2", "dirt9"];
 
         //Set Asset Arrays
         const rockAssets = [
+          "rock1",
+          "rock2",
+          "rock3",
+          "rock4",
           "rock5",
-          // "rock6",
-          // "rock13"
+          "rock6",
         ];
-        const treeAssets = [
-          "treeTop1", 
-          "treeTop2", 
-          "treeTop3",
-          "treeTop4"
-        ];
+        const treeAssets = ["treeTop1", "treeTop2", "treeTop3"];
         const foliageAssets = [
           "foliage1",
           "foliage2",
@@ -172,14 +165,14 @@ const PhaserScene = (props) => {
           "bush1",
           "bush2",
           "bush3",
-          // "bush4",
-          // "bush5",
-          // "bush6",
-          // "bush7",
-          // "bush8",
-          // "bush19",
+          "bush4",
+          "bush5",
+          "bush6",
+          "bush7",
+          "bush8",
+          "bush19",
         ];
-        const fernAssets = ["fern1", "fern2", "fern3", ];
+        const fernAssets = ["fern1", "fern2", "fern3", "fern4", "fern5"];
         const flowerAssets = ["flower5", "flower6"];
         const flowersAssets = ["flowers1", "flowers2", "flowers3", "flowers5"];
 
@@ -205,75 +198,71 @@ const PhaserScene = (props) => {
 
         //Initiate Perlin Noise
         const sketch = new p5();
-        for (let row = 0; row < numTiles; row++) { // Iterate over each row in the grid
-          for (let col = 0; col < numTiles; col++) { // Iterate over each column in the grid for the current row
-            const tileX = col * tileSize; // Calculate the x position of the current tile in pixels
-            const tileY = row * tileSize; // Calculate the y position of the current tile in pixels
-        
-            // Use Perlin noise to generate a smooth, natural-looking terrain height value
-            const terrainNoise = sketch.noise(col / 10, row / 10); 
-        
-            // Use Perlin noise to generate a value for texture variation
+        for (let row = 0; row < numTiles; row++) {
+          for (let col = 0; col < numTiles; col++) {
+            const tileX = col * tileSize;
+            const tileY = row * tileSize;
+            const terrainNoise = sketch.noise(col / 10, row / 10);
             const textureNoise = sketch.noise(
               (col + 100) / 10,
               (row + 100) / 10
             );
-        
-            let tileType; // Variable to store the type of the current tile
-        
-            //Grass Tiles
-            if (terrainNoise < 0.5) { // If the terrain height is less than 0.5, the tile is a grass tile
-              const textureIndex = Math.floor(textureNoise * grassTiles.length);
-              tileType = grassTiles[textureIndex]; // Select a grass tile type based on the texture noise
-        
-              // Iterate over each type of grass asset
-              treeAssets.forEach((foliageAsset) => {
-                // Randomly (2% chance) add a grass asset to the tile
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; // Random rotation for the asset
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; // Random scale for the asset
-                  this.add
-                    .image(tileX, tileY, foliageAsset) // Add the grass asset to the scene at the tile's position
-                    .setOrigin(0) // Set the origin of the asset to its top left corner
-                    .setScale(randomScale) // Scale the asset by the random scale factor
-                    .setDepth(1) // Set the depth of the asset to 1, so it appears above the tile
-                    // .setAngle(randomRotation) // Rotate the asset by the random angle
-                }
-              });
 
-              // Bush Asset
-              bushAssets.forEach((foliageAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; 
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; 
-                  this.add
-                    .image(tileX, tileY, foliageAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1) 
-                    // .setAngle(randomRotation) 
-                }
-              });
-               // Fern Asset
-               fernAssets.forEach((foliageAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; 
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; 
-                  this.add
-                    .image(tileX, tileY, foliageAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1) 
-                    // .setAngle(randomRotation) 
-                }
-              });
+            let tileType;
+
+            //Grass Tiles
+            if (terrainNoise < 0.5) {
+              const textureIndex = Math.floor(textureNoise * grassTiles.length);
+              tileType = grassTiles[textureIndex];
+              //Add Grass on specfic tile type
+              // grassAssetsCombine.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1)
+              //       .setAngle(randomRotation)
+              //   }
+              // });
+
+              //Tree Top Assets
+              // treeAssets.forEach((treeAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, treeAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1)
+              //       .setAngle(randomRotation);
+              //   }
+              // });
+
+              //Boulder Asset
+              // if (Math.random() < 0.01) {
+              //   this.add
+              //     .image(tileX, tileY, "mossyBoulder1")
+              //     .setOrigin(0)
+              //     .setScale(assetBaseScale * 2)
+              //     .setDepth(1);
+              // }
             } else {
               //Dirt tiles
               const textureIndex = Math.floor(textureNoise * dirtTiles.length);
               tileType = dirtTiles[textureIndex];
               //Rock Assets
               rockAssets.forEach((rockAsset) => {
-                if (Math.random() < 0.02) {
+                if (Math.random() < 0.01) {
                   const randomRotation = Math.random() * 360;
                   const randomScale =
                     assetBaseScale +
@@ -284,7 +273,7 @@ const PhaserScene = (props) => {
                     .setOrigin(0)
                     .setScale(randomScale)
                     .setDepth(1)
-                    // .setAngle(randomRotation);
+                    .setAngle(randomRotation);
                 }
               });
             }
