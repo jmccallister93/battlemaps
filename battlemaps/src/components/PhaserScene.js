@@ -12,6 +12,7 @@ import dirt9 from "../assets/DirtTile/dirtTileMain.png";
 
 import edge from "../assets/GrassDirtEdges/edge.png";
 import corner from "../assets/GrassDirtEdges/corner.png";
+import island from "../assets/GrassDirtEdges/island.png";
 
 import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
 import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
@@ -79,6 +80,7 @@ const PhaserScene = (props) => {
 
         this.load.image("edge", edge);
         this.load.image("corner", corner);
+        this.load.image("island", island);
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -207,8 +209,8 @@ const PhaserScene = (props) => {
           tileGrid[row] = [];
           // Iterate over each row in the grid
           for (let col = 0; col < numTiles; col++) {
-            const tileX = col * tileSize; 
-            const tileY = row * tileSize; 
+            const tileX = col * tileSize;
+            const tileY = row * tileSize;
 
             // Use Perlin noise to generate a smooth, natural-looking terrain height value
             const terrainNoise = sketch.noise(col / 10, row / 10);
@@ -314,8 +316,91 @@ const PhaserScene = (props) => {
             tileGrid[row][col] = tileType;
           }
         }
+        //Nearby Array
+        let nearbyTiles = {};
+        // Go through the tileGrid again to replace tiles
+        for (let row = 0; row < numTiles; row++) {
+          for (let col = 0; col < numTiles; col++) {
+            if (tileGrid[row][col]) {
+              if (row < numTiles - 1) {
+                // console.log("bottom " + tileGrid[row + 1][col]);
+                let bottom = tileGrid[row + 1][col];
+                nearbyTiles["bottom"] = bottom;
+              }
+
+              // right
+              if (col < numTiles - 1) {
+                // console.log("right " + tileGrid[row][col + 1]);
+                let right = tileGrid[row][col + 1];
+                nearbyTiles["right"] = right;
+              }
+
+              // bottom right
+              if (row < numTiles - 1 && col < numTiles - 1) {
+                // console.log("bottom right " + tileGrid[row + 1][col + 1]);
+                let bottomRight = tileGrid[row + 1][col + 1];
+                nearbyTiles["bottomRight"] = bottomRight;
+              }
+
+              // top
+              if (row > 0) {
+                // console.log("top " + tileGrid[row - 1][col]);
+                let top = tileGrid[row - 1][col];
+                nearbyTiles["top"] = top;
+              }
+
+              // left
+              if (col > 0) {
+                // console.log("left " + tileGrid[row][col - 1]);
+                let left = tileGrid[row][col - 1];
+                nearbyTiles["left"] = left;
+              }
+
+              // top left
+              if (row > 0 && col > 0) {
+                // console.log("top left " + tileGrid[row - 1][col - 1]);
+                let topLeft = tileGrid[row - 1][col - 1];
+                nearbyTiles["topLeft"] = topLeft;
+              }
+
+              // Track whether we found a grass tile
+              let foundGrass = false;
+
+              // Track which direction the grass tile is in
+              let grassDirection = null;
+
+              // Check each nearby tile
+              for (let direction in nearbyTiles) {
+                
+                if (nearbyTiles[direction] === "grass5") {
+                  console.log("found grass")
+                  // We found a grass tile, so set foundGrass to true and store the direction
+                  foundGrass = true;
+                  grassDirection = direction;
+                  break; // Exit the loop as soon as we find a grass tile
+                }
+              }
+
+              // If we found a grass tile, replace the current tile
+              if (foundGrass) {
+               
+                // Replace the current tile with another one, e.g., "newTileType"
+                let newTileType = "newTileType"; // Replace this with the actual new tile type
+                // let newTile = this.add
+                //   .image(col * tileSize, row * tileSize, newTileType)
+                //   .setOrigin(0);
+                // this.gameObjects[row * numTiles + col] = newTile;
+
+                // Also update tileGrid so the new tile is taken into account in future checks
+                tileGrid[row][col] = newTileType;
+              }
+
+              // Reset the nearbyTiles array for the next iteration
+              nearbyTiles = {};
+            }
+          }
+        }
       }
-      
     }
     // Create a new Phaser game instance
     const game = new Phaser.Game({
@@ -325,7 +410,7 @@ const PhaserScene = (props) => {
       height: 960,
       scene: [MyScene],
     });
-    
+
     gameRef.current = game;
 
     // Clean up the Phaser game instance when the component unmounts
