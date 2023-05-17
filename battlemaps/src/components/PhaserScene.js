@@ -129,7 +129,7 @@ const PhaserScene = (props) => {
         const tileSize = 32; // Size of each tile in pixels
         const numTiles = 32; // Number of tiles in the scene
 
-        this.cameras.main.setSize(800, 800); // Set the size of the camera to match the scene
+        this.cameras.main.setSize(960, 960); // Set the size of the camera to match the scene
 
         //Set Tiles Arrays
         const grassTiles = [
@@ -207,9 +207,8 @@ const PhaserScene = (props) => {
           tileGrid[row] = [];
           // Iterate over each row in the grid
           for (let col = 0; col < numTiles; col++) {
-            // Iterate over each column in the grid for the current row
-            const tileX = col * tileSize; // Calculate the x position of the current tile in pixels
-            const tileY = row * tileSize; // Calculate the y position of the current tile in pixels
+            const tileX = col * tileSize; 
+            const tileY = row * tileSize; 
 
             // Use Perlin noise to generate a smooth, natural-looking terrain height value
             const terrainNoise = sketch.noise(col / 10, row / 10);
@@ -229,125 +228,104 @@ const PhaserScene = (props) => {
               tileType = grassTiles[textureIndex]; // Select a grass tile type based on the texture noise
 
               // Iterate over each type of grass asset
-              treeAssets.forEach((foliageAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360;
-                  const randomScale =
-                    assetBaseScale +
-                    Math.random() * scaleVariation -
-                    scaleVariation / 2;
-                  this.add
-                    .image(tileX, tileY, foliageAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1);
-                  // .setAngle(randomRotation)
-                }
-              });
+              // treeAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
 
               // Bush Asset
-              bushAssets.forEach((foliageAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360;
-                  const randomScale =
-                    assetBaseScale +
-                    Math.random() * scaleVariation -
-                    scaleVariation / 2;
-                  this.add
-                    .image(tileX, tileY, foliageAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1);
-                  // .setAngle(randomRotation)
-                }
-              });
+              // bushAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
               // Fern Asset
-              fernAssets.forEach((foliageAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360;
-                  const randomScale =
-                    assetBaseScale +
-                    Math.random() * scaleVariation -
-                    scaleVariation / 2;
-                  this.add
-                    .image(tileX, tileY, foliageAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1);
-                  // .setAngle(randomRotation)
-                }
-              });
+              // fernAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
             } else {
               //Dirt tiles
               const textureIndex = Math.floor(textureNoise * dirtTiles.length);
               tileType = dirtTiles[textureIndex];
               //Rock Assets
-              rockAssets.forEach((rockAsset) => {
-                if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360;
-                  const randomScale =
-                    assetBaseScale +
-                    Math.random() * scaleVariation -
-                    scaleVariation / 2;
-                  this.add
-                    .image(tileX, tileY, rockAsset)
-                    .setOrigin(0)
-                    .setScale(randomScale)
-                    .setDepth(1);
-                  // .setAngle(randomRotation);
-                }
-              });
+              // rockAssets.forEach((rockAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, rockAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation);
+              //   }
+              // });
             }
 
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
+
+            // Add the row and column number as text on top of the tile
+            let text = this.add
+              .text(tileX, tileY, `(${col}, ${row})`, {
+                fontSize: "6px",
+                fill: "#fff",
+              })
+              .setOrigin(0);
+            this.gameObjects.push(text);
+
             // Add the tile type to the tileArray
             tileGrid[row][col] = tileType;
           }
         }
-        for (let row = 0; row < numTiles; row++) {
-          for (let col = 0; col < numTiles; col++) {
-            let rotationAngle = 0;
-            if (tileGrid[row][col].startsWith("dirt")) {
-              if (col > 0 && tileGrid[row][col - 1].startsWith("grass")) { // Left
-                rotationAngle = 0;
-              }
-              else if (col < numTiles - 1 && tileGrid[row][col + 1].startsWith("grass")) { // Right
-                rotationAngle = 180;
-              }
-              else if (row > 0 && tileGrid[row - 1][col].startsWith("grass")) { // Top
-                rotationAngle = 90;
-              }
-              else if (row < numTiles - 1 && tileGrid[row + 1][col].startsWith("grass")) { // Bottom
-                rotationAngle = 270;
-              }
-            
-              if (rotationAngle !== null) {
-                // If there's a grass tile adjacent, replace the current dirt tile with an edge tile
-                tileGrid[row][col] = "edge";
-            
-                // Replace the tile in the game scene
-                this.gameObjects[row * numTiles + col].destroy(); // Destroy the old tile
-                let newTile = this.add
-                  .image(col * tileSize, row * tileSize, "edge")
-                  .setOrigin(0.5)
-                  .setAngle(rotationAngle); // Rotate the tile according to the adjacent grass tile
-                this.gameObjects[row * numTiles + col] = newTile; // Update the gameObjects array
-              }
-            }
-          }
-        }
       }
+      
     }
     // Create a new Phaser game instance
     const game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: phaserContainerRef.current,
-      width: 800,
-      height: 800,
+      width: 960,
+      height: 960,
       scene: [MyScene],
     });
-
+    
     gameRef.current = game;
 
     // Clean up the Phaser game instance when the component unmounts
