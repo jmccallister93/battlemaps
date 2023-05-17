@@ -10,10 +10,26 @@ import dirt1 from "../assets/DirtTile/Dirt_01-128x128.png";
 import dirt2 from "../assets/DirtTile/Dirt_02-128x128.png";
 import dirt9 from "../assets/DirtTile/dirtTileMain.png";
 
-import edge from "../assets/GrassDirtEdges/edge.png";
-import corner from "../assets/GrassDirtEdges/corner.png";
+import edgeLeft from "../assets/GrassDirtEdges/edgeLeft.png";
+import edgeTop from "../assets/GrassDirtEdges/edgeTop.png";
+import edgeRight from "../assets/GrassDirtEdges/edgeRight.png";
+import edgeBottom from "../assets/GrassDirtEdges/edgeBottom.png";
+
+import cornerTopLeft from "../assets/GrassDirtEdges/cornerTopLeft.png";
+import cornerBottomLeft from "../assets/GrassDirtEdges/cornerBottomLeft.png";
+import cornerTopRight from "../assets/GrassDirtEdges/cornerTopLeft.png";
+import cornerBottomRight from "../assets/GrassDirtEdges/cornerBottomRight.png";
+
+import smallTL from "../assets/GrassDirtEdges/smallTL.png"
+import smallTR from "../assets/GrassDirtEdges/smallTR.png"
+import smallBL from "../assets/GrassDirtEdges/smallBL.png"
+import smallBR from "../assets/GrassDirtEdges/smallBR.png"
+
+import splitLR from "../assets/GrassDirtEdges/splitLR.png";
+import splitTB from "../assets/GrassDirtEdges/splitTB.png"
+
 import island from "../assets/GrassDirtEdges/island.png";
-import split from "../assets/GrassDirtEdges/split.png";
+
 
 import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
 import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
@@ -79,10 +95,27 @@ const PhaserScene = (props) => {
         this.load.image("grass8", grass8);
         this.load.image("grass21", grass21);
 
-        this.load.image("edge", edge);
-        this.load.image("corner", corner);
+        this.load.image("edgeTop", edgeTop);
+        this.load.image("edgeRight", edgeRight);
+        this.load.image("edgeBottom", edgeBottom);
+        this.load.image("edgeLeft", edgeLeft);
+
+        this.load.image("cornerTR", cornerTopRight);
+        this.load.image("cornerBR", cornerBottomRight);
+        this.load.image("cornerTL", cornerTopLeft);
+        this.load.image("cornerBL", cornerBottomLeft);
+
+        this.load.image("smallTL", smallTL)
+        this.load.image("smallTR", smallTR)
+        this.load.image("smallBL", smallBL)
+        this.load.image("smallBR", smallBR)
+
+        this.load.image("splitLR", splitLR);
+        this.load.image("splitTB", splitTB);
+
+
         this.load.image("island", island);
-        this.load.image("split", split);
+        
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -306,13 +339,13 @@ const PhaserScene = (props) => {
             this.gameObjects.push(tile);
 
             // Add the row and column number as text on top of the tile
-            let text = this.add
-              .text(tileX, tileY, `(${col}, ${row})`, {
-                fontSize: "6px",
-                fill: "#fff",
-              })
-              .setOrigin(0);
-            this.gameObjects.push(text);
+            // let text = this.add
+            //   .text(tileX, tileY, `(${col}, ${row})`, {
+            //     fontSize: "6px",
+            //     fill: "#fff",
+            //   })
+            //   .setOrigin(0);
+            // this.gameObjects.push(text);
 
             // Add the tile type to the tileArray
             tileGrid[row][col] = tileType;
@@ -377,7 +410,6 @@ const PhaserScene = (props) => {
                   if (nearbyTiles[direction] === "grass5") {
                     foundGrass = true;
                     grassDirection.push(direction);
-
                   }
                 }
 
@@ -385,137 +417,63 @@ const PhaserScene = (props) => {
                 if (foundGrass) {
                   let newTileType;
                   let rotation;
+                  let origin = 0;
+                  let directionString = grassDirection.sort().join(" ");
 
                   for (let direction of grassDirection) {
-                    switch (direction) {
-                      case "left":
-                        console.log("Found grass on the left");
-                        newTileType = "edge";
-                        rotation = 0;
+                    switch (directionString) {
+                      //Single Direction
+                      case "bottom":
+                        newTileType = "edgeLeft";
                         break;
                       case "right":
-                        console.log("Found grass on the right");
-                        newTileType = "edge";
-                        rotation = 180;
+                        newTileType = "edgeRight";
+                        break;
+                      case "bottomRight":
                         break;
                       case "top":
-                        console.log("Found grass on the top");
-                        newTileType = "edge";
-                        rotation = 90;
+                        newTileType = "edgeTop";
                         break;
-                      case "bottom":
-                        console.log("Found grass on the bottom");
+                      case "left":
+                        newTileType = "edgeLeft";
+                        break;
+                      case "topLeft":
+                        break;
+
+                      //Bottom combos
+                      case "bottom right":
+                        newTileType = "cornerBottomRight";
+                        
+                        break;
+                      case "bottom bottomRight":
+                        newTileType = "edgeBottom";
+                      
+                        break;
+                      case "bottom top":
+                        newTileType = "split";
+                        rotation = 90;
+                        origin = 1;
+                        break;
+                      case "bottom left":
+                        newTileType = "corner";
+                        rotation = 270;
+                        origin = 1;
+                        break;
+                      case "bottom topLeft":
                         newTileType = "edge";
                         rotation = 270;
                         break;
 
-                      case "leftRight":
-                        console.log("Found grass on the left and right");
-                        newTileType = "split";
-                        rotation = 0;
-                        break;
-                      case "leftTop":
-                        console.log("Found grass on the left and top");
-                        newTileType = "corner";
-                        rotation = 0;
-                        break;
-                      case "leftBottom":
-                        console.log("Found grass on the left and bottom");
-                        newTileType = "corner";
-                        rotation = 0;
-                        break;
-                      case "leftBottomRight":
-                        console.log(
-                          "Found grass on the left, bottom, and bottom right"
-                        );
-                        newTileType = "corner";
-                        rotation = 270;
-                        break;
-                      case "leftBottomLeft":
-                        console.log(
-                          "Found grass on the left, bottom, and bottom left"
-                        );
-                        newTileType = "corner";
-                        rotation = 270;
-                        break;
-                      case "rightTop":
-                        console.log("Found grass on the right and top");
-                        newTileType = "corner";
-                        rotation = 90;
-                        break;
-                      case "rightBottom":
-                        console.log("Found grass on the right and bottom");
-                        newTileType = "corner";
-                        rotation = 180;
-                        break;
-                      case "rightBottomRight":
-                        console.log(
-                          "Found grass on the right, bottom, and bottom right"
-                        );
-                        newTileType = "corner";
-                        rotation = 180;
-                        break;
-                      case "rightBottomLeft":
-                        console.log(
-                          "Found grass on the right, bottom, and bottom left"
-                        );
-                        newTileType = "corner";
-                        rotation = 180;
-                        break;
-                      case "topBottom":
-                        console.log("Found grass on the top and bottom");
-                        newTileType = "split";
-                        rotation = 90;
-                        break;
-                      case "topBottomRight":
-                        console.log(
-                          "Found grass on the top, bottom, and bottom right"
-                        );
-                        newTileType = "split";
-                        rotation = 90;
-                        break;
-                      case "topBottomLeft":
-                        console.log(
-                          "Found grass on the top, bottom, and bottom left"
-                        );
-                        newTileType = "split";
-                        rotation = 90;
-                        break;
-                      case "topRight":
-                        console.log("Found grass on the top and right");
-                        newTileType = "edge";
-                        rotation = 180;
-                        break;
-                      case "topLeft":
-                        console.log("Found grass on the top and left");
-                        newTileType = "corner";
-                        rotation = 0;
-                        break;
-                      case "topLeftRight":
-                        console.log("Found grass on the top, left, and right");
-                        newTileType = "island";
-                        rotation = 0;
-                        break;
-                      case "topLeftBottom":
-                        console.log("Found grass on the top, left, and bottom");
-                        newTileType = "island";
-                        rotation = 270;
-                        break;
-                      case "topLeftBottomRight":
-                        console.log(
-                          "Found grass on all directions: top, left, right, bottom, and bottom right"
-                        );
-                        newTileType = "island";
-                        rotation = 0;
-                        break;
                       default:
-                        console.log("Grass direction not recognized: " + direction );
+                        console.log(
+                          "Grass direction not recognized: " + direction
+                        );
                         break;
                     }
 
                     let newTile = this.add
                       .image(col * tileSize, row * tileSize, newTileType)
-                      .setOrigin(0)
+                      .setOrigin(origin)
                       .setScale(0.25)
                       .setAngle(rotation); // Set the rotation of the image
                     this.gameObjects[row * numTiles + col] = newTile;
