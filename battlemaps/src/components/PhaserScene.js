@@ -5,12 +5,13 @@ import p5 from "p5";
 import grass5 from "../assets/GrassTile/grassTileMain.png";
 import grass8 from "../assets/GrassTile/Grass_08-128x128.png";
 import grass21 from "../assets/GrassTile/Grass_21-128x128.png";
-import grassCorner5 from "../assets/GrassTile/grass05_corner_blend.png";
-import grassEdge5 from "../assets/GrassTile/grass05_left_blend.png";
 
 import dirt1 from "../assets/DirtTile/Dirt_01-128x128.png";
 import dirt2 from "../assets/DirtTile/Dirt_02-128x128.png";
 import dirt9 from "../assets/DirtTile/dirtTileMain.png";
+
+import edge from "../assets/GrassDirtEdges/edge.png";
+import corner from "../assets/GrassDirtEdges/corner.png";
 
 import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
 import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
@@ -75,8 +76,9 @@ const PhaserScene = (props) => {
         this.load.image("grass5", grass5);
         this.load.image("grass8", grass8);
         this.load.image("grass21", grass21);
-        this.load.image("grassCorner5", grassCorner5);
-        this.load.image("grassEdge5", grassEdge5);
+
+        this.load.image("edge", edge);
+        this.load.image("corner", corner);
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -136,6 +138,8 @@ const PhaserScene = (props) => {
           // "grass21",
           // "grassCorner5",
           // "grassEdge5",
+          // "corner",
+          // "edge"
         ];
         const dirtTiles = [
           // "dirt1",
@@ -200,7 +204,7 @@ const PhaserScene = (props) => {
         //Initiate Perlin Noise
         const sketch = new p5();
         for (let row = 0; row < numTiles; row++) {
-          tileGrid[row] = []
+          tileGrid[row] = [];
           // Iterate over each row in the grid
           for (let col = 0; col < numTiles; col++) {
             // Iterate over each column in the grid for the current row
@@ -298,10 +302,41 @@ const PhaserScene = (props) => {
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
             // Add the tile type to the tileArray
-            tileGrid[row][col] = tileType; 
+            tileGrid[row][col] = tileType;
           }
         }
-        console.log(tileGrid)
+        for (let row = 0; row < numTiles; row++) {
+          for (let col = 0; col < numTiles; col++) {
+            let rotationAngle = 0;
+            if (tileGrid[row][col].startsWith("dirt")) {
+              if (col > 0 && tileGrid[row][col - 1].startsWith("grass")) { // Left
+                rotationAngle = 0;
+              }
+              else if (col < numTiles - 1 && tileGrid[row][col + 1].startsWith("grass")) { // Right
+                rotationAngle = 180;
+              }
+              else if (row > 0 && tileGrid[row - 1][col].startsWith("grass")) { // Top
+                rotationAngle = 90;
+              }
+              else if (row < numTiles - 1 && tileGrid[row + 1][col].startsWith("grass")) { // Bottom
+                rotationAngle = 270;
+              }
+            
+              if (rotationAngle !== null) {
+                // If there's a grass tile adjacent, replace the current dirt tile with an edge tile
+                tileGrid[row][col] = "edge";
+            
+                // Replace the tile in the game scene
+                this.gameObjects[row * numTiles + col].destroy(); // Destroy the old tile
+                let newTile = this.add
+                  .image(col * tileSize, row * tileSize, "edge")
+                  .setOrigin(0.5)
+                  .setAngle(rotationAngle); // Rotate the tile according to the adjacent grass tile
+                this.gameObjects[row * numTiles + col] = newTile; // Update the gameObjects array
+              }
+            }
+          }
+        }
       }
     }
     // Create a new Phaser game instance
@@ -323,7 +358,6 @@ const PhaserScene = (props) => {
 
   // Define the restartScene function
   const restartScene = () => {
-    
     // if (gameRef.current) {
     //   const sceneKey = "myScene";
     //   const sceneManager = gameRef.current.scene;
