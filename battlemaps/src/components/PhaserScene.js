@@ -17,19 +17,18 @@ import edgeBottom from "../assets/GrassDirtEdges/edgeBottom.png";
 
 import cornerTopLeft from "../assets/GrassDirtEdges/cornerTopLeft.png";
 import cornerBottomLeft from "../assets/GrassDirtEdges/cornerBottomLeft.png";
-import cornerTopRight from "../assets/GrassDirtEdges/cornerTopLeft.png";
+import cornerTopRight from "../assets/GrassDirtEdges/cornerTopRight.png";
 import cornerBottomRight from "../assets/GrassDirtEdges/cornerBottomRight.png";
 
-import smallTL from "../assets/GrassDirtEdges/smallTL.png"
-import smallTR from "../assets/GrassDirtEdges/smallTR.png"
-import smallBL from "../assets/GrassDirtEdges/smallBL.png"
-import smallBR from "../assets/GrassDirtEdges/smallBR.png"
+import smallTL from "../assets/GrassDirtEdges/smallTL.png";
+import smallTR from "../assets/GrassDirtEdges/smallTR.png";
+import smallBL from "../assets/GrassDirtEdges/smallBL.png";
+import smallBR from "../assets/GrassDirtEdges/smallBR.png";
 
 import splitLR from "../assets/GrassDirtEdges/splitLR.png";
-import splitTB from "../assets/GrassDirtEdges/splitTB.png"
+import splitTB from "../assets/GrassDirtEdges/splitTB.png";
 
 import island from "../assets/GrassDirtEdges/island.png";
-
 
 import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
 import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
@@ -105,17 +104,15 @@ const PhaserScene = (props) => {
         this.load.image("cornerTL", cornerTopLeft);
         this.load.image("cornerBL", cornerBottomLeft);
 
-        this.load.image("smallTL", smallTL)
-        this.load.image("smallTR", smallTR)
-        this.load.image("smallBL", smallBL)
-        this.load.image("smallBR", smallBR)
+        this.load.image("smallTL", smallTL);
+        this.load.image("smallTR", smallTR);
+        this.load.image("smallBL", smallBL);
+        this.load.image("smallBR", smallBR);
 
         this.load.image("splitLR", splitLR);
         this.load.image("splitTB", splitTB);
 
-
         this.load.image("island", island);
-        
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -377,6 +374,12 @@ const PhaserScene = (props) => {
                 nearbyTiles["bottomRight"] = bottomRight;
               }
 
+              // bottom left
+              if (row < numTiles - 1 && col > 0) {
+                let bottomLeft = tileGrid[row + 1][col - 1];
+                nearbyTiles["bottomLeft"] = bottomLeft;
+              }
+
               // top
               if (row > 0) {
                 // console.log("top " + tileGrid[row - 1][col]);
@@ -396,6 +399,12 @@ const PhaserScene = (props) => {
                 // console.log("top left " + tileGrid[row - 1][col - 1]);
                 let topLeft = tileGrid[row - 1][col - 1];
                 nearbyTiles["topLeft"] = topLeft;
+              }
+
+              // top right
+              if (row > 0 && col < numTiles - 1) {
+                let topRight = tileGrid[row - 1][col + 1];
+                nearbyTiles["topRight"] = topRight;
               }
 
               // Track whether we found a grass tile
@@ -430,6 +439,10 @@ const PhaserScene = (props) => {
                         newTileType = "edgeRight";
                         break;
                       case "bottomRight":
+                        newTileType = "smallBR";
+                        break;
+                      case "bottomLeft":
+                        newTileType = "smallBL";
                         break;
                       case "top":
                         newTileType = "edgeTop";
@@ -438,30 +451,108 @@ const PhaserScene = (props) => {
                         newTileType = "edgeLeft";
                         break;
                       case "topLeft":
+                        newTileType = "smallTL";
+                        break;
+                      case "topRight":
+                        newTileType = "smallTR";
                         break;
 
                       //Bottom combos
                       case "bottom right":
-                        newTileType = "cornerBottomRight";
-                        
+                        newTileType = "cornerBR";
                         break;
                       case "bottom bottomRight":
                         newTileType = "edgeBottom";
-                      
+                        break;
+                      case "bottom bottomLeft":
+                        newTileType = "edgeBottom";
                         break;
                       case "bottom top":
-                        newTileType = "split";
-                        rotation = 90;
-                        origin = 1;
+                        newTileType = "splitTB";
                         break;
                       case "bottom left":
-                        newTileType = "corner";
-                        rotation = 270;
-                        origin = 1;
+                        newTileType = "cornerBL";
                         break;
                       case "bottom topLeft":
-                        newTileType = "edge";
-                        rotation = 270;
+                        newTileType = "edgeBottom";
+                        break;
+                      case "bottom topRight":
+                        newTileType = "edgeBottom";
+                        break;
+
+                      //Right Combos
+                      case "right bottomRight":
+                        newTileType = "edgeRight";
+                        break;
+                      case "right bottomLeft":
+                        newTileType = "edgeRight";
+                        break;
+                      case "right top":
+                        newTileType = "cornerTR";
+                        break;
+                      case "right left":
+                        newTileType = "splitLR";
+                        break;
+                      case "right topLeft":
+                        newTileType = "edgeRight";
+                        break;
+                      case "right topRight":
+                        newTileType = "edgeRight";
+                        break;
+
+                      //BR combos
+                      case "bottomRight top":
+                        newTileType = "edgeTop";
+                        break;
+                      case "bottomRight bottomLeft":
+                        //need to make
+                        break;
+                      case "bottomRight left":
+                        newTileType = "edgeLeft";
+                        break;
+                      case "bottomRight topLeft":
+                        //Need to make modified tiles
+                        break;
+                      case "bottomRight topRight":
+                        //need to make tile
+                        break;
+
+                      //Bottom Left Combos
+                      case "bottomLeft top":
+                        newTileType = "edgeTop";
+                        break;
+                      case "bottomLeft left":
+                        newTileType = "edgeLeft";
+                        break;
+                      case "bottomLeft topLeft":
+                        //Need to make modified tiles
+                        break;
+                      case "bottomLeft topRight":
+                        //need to make tile
+                        break;
+
+                      //Top Combos
+                      case "top left":
+                        newTileType = "cornerTL";
+                        break;
+                      case "top topLeft":
+                        newTileType = "edgeTop";
+                        break;
+                      case "top topRight":
+                        newTileType = "edgeTop";
+                        break;
+
+                      //Left Combo
+                      case "left topLeft":
+                        newTileType = "edgeLeft";
+                        break;
+                      case "left topRight":
+                        newTileType = "edgeLeft";
+                        break;
+
+                      //TopLeft combo
+                      case "topLeft topRight":
+                        //Need to make tile
                         break;
 
                       default:
