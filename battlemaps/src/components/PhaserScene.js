@@ -28,7 +28,10 @@ import smallBR from "../assets/GrassDirtEdges/smallBR.png";
 import splitLR from "../assets/GrassDirtEdges/splitLR.png";
 import splitTB from "../assets/GrassDirtEdges/splitTB.png";
 
-import island from "../assets/GrassDirtEdges/island.png";
+import islandT from "../assets/GrassDirtEdges/islandT.png";
+import islandB from "../assets/GrassDirtEdges/islandB.png";
+import islandL from "../assets/GrassDirtEdges/islandL.png";
+import islandR from "../assets/GrassDirtEdges/islandR.png";
 
 import treeTop1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 1 S.png";
 import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 2 S.png";
@@ -61,8 +64,6 @@ import bush9 from "../assets/ForestFloor/Bush 9 - Yellow.png";
 import fern1 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 1 S.png";
 import fern2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 2 S.png";
 import fern3 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Plant 5 S.png";
-// import fern4 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Small Plant 1 S.png";
-// import fern5 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Small Plant 15 S.png";
 
 import flower5 from "../assets/ForestFloor/Flower 5 - Green 3.png";
 import flower6 from "../assets/ForestFloor/Flower 6 - Green 3.png";
@@ -112,7 +113,10 @@ const PhaserScene = (props) => {
         this.load.image("splitLR", splitLR);
         this.load.image("splitTB", splitTB);
 
-        this.load.image("island", island);
+        this.load.image("islandT", islandT);
+        this.load.image("islandB", islandB);
+        this.load.image("islandL", islandL);
+        this.load.image("islandR", islandR);
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -335,251 +339,21 @@ const PhaserScene = (props) => {
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
 
-            // Add the row and column number as text on top of the tile
-            // let text = this.add
-            //   .text(tileX, tileY, `(${col}, ${row})`, {
-            //     fontSize: "6px",
-            //     fill: "#fff",
-            //   })
-            //   .setOrigin(0);
-            // this.gameObjects.push(text);
+            // After tile creation, apply the mask
+            let graphics = this.add.graphics();
+            graphics.fillCircle(
+              tileX + tileSize / 2,
+              tileY + tileSize / 2,
+              tileSize * 4
+            );
+            let mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
+            tile.setMask(mask);
 
             // Add the tile type to the tileArray
             tileGrid[row][col] = tileType;
           }
         }
-        //Nearby Array
-        let nearbyTiles = {};
-        // Go through the tileGrid again to replace tiles
-        for (let row = 0; row < numTiles; row++) {
-          for (let col = 0; col < numTiles; col++) {
-            if (tileGrid[row][col]) {
-              if (row < numTiles - 1) {
-                // console.log("bottom " + tileGrid[row + 1][col]);
-                let bottom = tileGrid[row + 1][col];
-                nearbyTiles["bottom"] = bottom;
-              }
-
-              // right
-              if (col < numTiles - 1) {
-                // console.log("right " + tileGrid[row][col + 1]);
-                let right = tileGrid[row][col + 1];
-                nearbyTiles["right"] = right;
-              }
-
-              // bottom right
-              if (row < numTiles - 1 && col < numTiles - 1) {
-                // console.log("bottom right " + tileGrid[row + 1][col + 1]);
-                let bottomRight = tileGrid[row + 1][col + 1];
-                nearbyTiles["bottomRight"] = bottomRight;
-              }
-
-              // bottom left
-              if (row < numTiles - 1 && col > 0) {
-                let bottomLeft = tileGrid[row + 1][col - 1];
-                nearbyTiles["bottomLeft"] = bottomLeft;
-              }
-
-              // top
-              if (row > 0) {
-                // console.log("top " + tileGrid[row - 1][col]);
-                let top = tileGrid[row - 1][col];
-                nearbyTiles["top"] = top;
-              }
-
-              // left
-              if (col > 0) {
-                // console.log("left " + tileGrid[row][col - 1]);
-                let left = tileGrid[row][col - 1];
-                nearbyTiles["left"] = left;
-              }
-
-              // top left
-              if (row > 0 && col > 0) {
-                // console.log("top left " + tileGrid[row - 1][col - 1]);
-                let topLeft = tileGrid[row - 1][col - 1];
-                nearbyTiles["topLeft"] = topLeft;
-              }
-
-              // top right
-              if (row > 0 && col < numTiles - 1) {
-                let topRight = tileGrid[row - 1][col + 1];
-                nearbyTiles["topRight"] = topRight;
-              }
-
-              // Track whether we found a grass tile
-              let foundGrass = false;
-
-              // Track which direction the grass tile is in
-              let grassDirection = [];
-
-              if (tileGrid[row][col] === "dirt9") {
-                // Check each nearby tile
-                for (let direction in nearbyTiles) {
-                  if (nearbyTiles[direction] === "grass5") {
-                    foundGrass = true;
-                    grassDirection.push(direction);
-                  }
-                }
-
-                // If we found a grass tile, replace the current tile
-                if (foundGrass) {
-                  let newTileType;
-                  let rotation;
-                  let origin = 0;
-                  let directionString = grassDirection.sort().join(" ");
-
-                  for (let direction of grassDirection) {
-                    switch (directionString) {
-                      //Single Direction
-                      case "bottom":
-                        newTileType = "edgeLeft";
-                        break;
-                      case "right":
-                        newTileType = "edgeRight";
-                        break;
-                      case "bottomRight":
-                        newTileType = "smallBR";
-                        break;
-                      case "bottomLeft":
-                        newTileType = "smallBL";
-                        break;
-                      case "top":
-                        newTileType = "edgeTop";
-                        break;
-                      case "left":
-                        newTileType = "edgeLeft";
-                        break;
-                      case "topLeft":
-                        newTileType = "smallTL";
-                        break;
-                      case "topRight":
-                        newTileType = "smallTR";
-                        break;
-
-                      //Bottom combos
-                      case "bottom right":
-                        newTileType = "cornerBR";
-                        break;
-                      case "bottom bottomRight":
-                        newTileType = "edgeBottom";
-                        break;
-                      case "bottom bottomLeft":
-                        newTileType = "edgeBottom";
-                        break;
-                      case "bottom top":
-                        newTileType = "splitTB";
-                        break;
-                      case "bottom left":
-                        newTileType = "cornerBL";
-                        break;
-                      case "bottom topLeft":
-                        newTileType = "edgeBottom";
-                        break;
-                      case "bottom topRight":
-                        newTileType = "edgeBottom";
-                        break;
-
-                      //Right Combos
-                      case "right bottomRight":
-                        newTileType = "edgeRight";
-                        break;
-                      case "right bottomLeft":
-                        newTileType = "edgeRight";
-                        break;
-                      case "right top":
-                        newTileType = "cornerTR";
-                        break;
-                      case "right left":
-                        newTileType = "splitLR";
-                        break;
-                      case "right topLeft":
-                        newTileType = "edgeRight";
-                        break;
-                      case "right topRight":
-                        newTileType = "edgeRight";
-                        break;
-
-                      //BR combos
-                      case "bottomRight top":
-                        newTileType = "edgeTop";
-                        break;
-                      case "bottomRight bottomLeft":
-                        //need to make
-                        break;
-                      case "bottomRight left":
-                        newTileType = "edgeLeft";
-                        break;
-                      case "bottomRight topLeft":
-                        //Need to make modified tiles
-                        break;
-                      case "bottomRight topRight":
-                        //need to make tile
-                        break;
-
-                      //Bottom Left Combos
-                      case "bottomLeft top":
-                        newTileType = "edgeTop";
-                        break;
-                      case "bottomLeft left":
-                        newTileType = "edgeLeft";
-                        break;
-                      case "bottomLeft topLeft":
-                        //Need to make modified tiles
-                        break;
-                      case "bottomLeft topRight":
-                        //need to make tile
-                        break;
-
-                      //Top Combos
-                      case "top left":
-                        newTileType = "cornerTL";
-                        break;
-                      case "top topLeft":
-                        newTileType = "edgeTop";
-                        break;
-                      case "top topRight":
-                        newTileType = "edgeTop";
-                        break;
-
-                      //Left Combo
-                      case "left topLeft":
-                        newTileType = "edgeLeft";
-                        break;
-                      case "left topRight":
-                        newTileType = "edgeLeft";
-                        break;
-
-                      //TopLeft combo
-                      case "topLeft topRight":
-                        //Need to make tile
-                        break;
-
-                      default:
-                        console.log(
-                          "Grass direction not recognized: " + direction
-                        );
-                        break;
-                    }
-
-                    let newTile = this.add
-                      .image(col * tileSize, row * tileSize, newTileType)
-                      .setOrigin(origin)
-                      .setScale(0.25)
-                      .setAngle(rotation); // Set the rotation of the image
-                    this.gameObjects[row * numTiles + col] = newTile;
-
-                    // Also update tileGrid so the new tile is taken into account in future checks
-                    tileGrid[row][col] = newTileType;
-                  }
-                }
-                grassDirection = [];
-              }
-              // Reset the nearbyTiles array for the next iteration
-              nearbyTiles = {};
-            }
-          }
-        }
+        
       }
     }
     // Create a new Phaser game instance
@@ -599,27 +373,11 @@ const PhaserScene = (props) => {
     };
   }, [seed]); // Empty dependency array ensures the effect runs only once
 
-  // Define the restartScene function
-  const restartScene = () => {
-    // if (gameRef.current) {
-    //   const sceneKey = "myScene";
-    //   const sceneManager = gameRef.current.scene;
-    //   const scene = sceneManager.keys[sceneKey];
-    //   if (scene) {
-    //     for (let i = 0; i < scene.gameObjects.length; i++) {
-    //       scene.gameObjects[i].destroy();
-    //     }
-    //     scene.gameObjects = [];
-    //     sceneManager.stop(sceneKey);
-    //     sceneManager.start(sceneKey);
-    //   }
-    //   setSeed(Math.random());
-    // }
-  };
+  
 
   return (
     <>
-      <button onClick={restartScene}>Restart Scene</button>
+      <button >Restart Scene</button>
       <div ref={phaserContainerRef} style={{ width: "100%", height: "100%" }} />
     </>
   );
