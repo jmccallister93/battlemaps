@@ -367,23 +367,109 @@ const PhaserScene = (props) => {
               let foundGrass = false;
 
               // Track which direction the grass tile is in
-              let grassDirection = null;
+              let grassDirection = [];
 
               // Check each nearby tile
               for (let direction in nearbyTiles) {
-                
                 if (nearbyTiles[direction] === "grass5") {
-                  console.log("found grass")
-                  // We found a grass tile, so set foundGrass to true and store the direction
                   foundGrass = true;
-                  grassDirection = direction;
+                  grassDirection.push(direction);
                   break; // Exit the loop as soon as we find a grass tile
                 }
               }
 
               // If we found a grass tile, replace the current tile
               if (foundGrass) {
-               
+                for(let direction of grassDirection){
+                switch (direction) {
+                  case "left":
+                    console.log("Found grass on the left");
+                    break;
+                  case "right":
+                    console.log("Found grass on the right");
+                    break;
+                  case "top":
+                    console.log("Found grass on the top");
+                    break;
+                  case "bottom":
+                    console.log("Found grass on the bottom");
+                    break;
+                  case "bottomRight":
+                    console.log("Found grass on the bottom right");
+                    break;
+                  case "bottomLeft":
+                    console.log("Found grass on the bottom left");
+                    break;
+                  case "leftRight":
+                    console.log("Found grass on the left and right");
+                    break;
+                  case "leftTop":
+                    console.log("Found grass on the left and top");
+                    break;
+                  case "leftBottom":
+                    console.log("Found grass on the left and bottom");
+                    break;
+                  case "leftBottomRight":
+                    console.log(
+                      "Found grass on the left, bottom, and bottom right"
+                    );
+                    break;
+                  case "leftBottomLeft":
+                    console.log(
+                      "Found grass on the left, bottom, and bottom left"
+                    );
+                    break;
+                  case "rightTop":
+                    console.log("Found grass on the right and top");
+                    break;
+                  case "rightBottom":
+                    console.log("Found grass on the right and bottom");
+                    break;
+                  case "rightBottomRight":
+                    console.log(
+                      "Found grass on the right, bottom, and bottom right"
+                    );
+                    break;
+                  case "rightBottomLeft":
+                    console.log(
+                      "Found grass on the right, bottom, and bottom left"
+                    );
+                    break;
+                  case "topBottom":
+                    console.log("Found grass on the top and bottom");
+                    break;
+                  case "topBottomRight":
+                    console.log(
+                      "Found grass on the top, bottom, and bottom right"
+                    );
+                    break;
+                  case "topBottomLeft":
+                    console.log(
+                      "Found grass on the top, bottom, and bottom left"
+                    );
+                    break;
+                  case "topRight":
+                    console.log("Found grass on the top and right");
+                    break;
+                  case "topLeft":
+                    console.log("Found grass on the top and left");
+                    break;
+                  case "topLeftRight":
+                    console.log("Found grass on the top, left, and right");
+                    break;
+                  case "topLeftBottom":
+                    console.log("Found grass on the top, left, and bottom");
+                    break;
+                  case "topLeftBottomRight":
+                    console.log(
+                      "Found grass on all directions: top, left, right, bottom, and bottom right"
+                    );
+                    break;
+                  default:
+                    console.log("Grass direction not recognized");
+                    break;
+                }
+
                 // Replace the current tile with another one, e.g., "newTileType"
                 let newTileType = "newTileType"; // Replace this with the actual new tile type
                 // let newTile = this.add
@@ -394,9 +480,12 @@ const PhaserScene = (props) => {
                 // Also update tileGrid so the new tile is taken into account in future checks
                 tileGrid[row][col] = newTileType;
               }
+              
+            }
 
               // Reset the nearbyTiles array for the next iteration
               nearbyTiles = {};
+              grassDirection=[]
             }
           }
         }
