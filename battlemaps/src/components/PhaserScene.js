@@ -17,7 +17,7 @@ import treeTop2 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With
 import treeTop3 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 5 S.png";
 import treeTop4 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Tree 6 S.png";
 
-import rock5 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Rock 5 S.png"
+import rock5 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Rock 5 S.png";
 // import rock6 from "../assets/Riverwood Assets Free Pack/Riverwood Assets/Rock 6.png"
 // import rock13 from "../assets/Riverwood Assets Free Pack/Riverwood Assets With Shadow/Rock 13 S - Copy.jpg"
 
@@ -54,8 +54,6 @@ import flowers2 from "../assets/ForestFloor/Flowers 2.png";
 import flowers3 from "../assets/ForestFloor/Flowers 3.png";
 
 import flowers5 from "../assets/ForestFloor/Flowers 5.png";
-
-
 
 const PhaserScene = (props) => {
   const phaserContainerRef = useRef(null);
@@ -118,7 +116,6 @@ const PhaserScene = (props) => {
         this.load.image("flowers2", flowers2);
         this.load.image("flowers3", flowers3);
         this.load.image("flowers5", flowers5);
-
       }
 
       create() {
@@ -141,9 +138,9 @@ const PhaserScene = (props) => {
           // "grassEdge5",
         ];
         const dirtTiles = [
-          // "dirt1", 
-          // "dirt2", 
-          "dirt9"
+          // "dirt1",
+          // "dirt2",
+          "dirt9",
         ];
 
         //Set Asset Arrays
@@ -152,12 +149,7 @@ const PhaserScene = (props) => {
           // "rock6",
           // "rock13"
         ];
-        const treeAssets = [
-          "treeTop1", 
-          "treeTop2", 
-          "treeTop3",
-          "treeTop4"
-        ];
+        const treeAssets = ["treeTop1", "treeTop2", "treeTop3", "treeTop4"];
         const foliageAssets = [
           "foliage1",
           "foliage2",
@@ -179,7 +171,7 @@ const PhaserScene = (props) => {
           // "bush8",
           // "bush19",
         ];
-        const fernAssets = ["fern1", "fern2", "fern3", ];
+        const fernAssets = ["fern1", "fern2", "fern3"];
         const flowerAssets = ["flower5", "flower6"];
         const flowersAssets = ["flowers1", "flowers2", "flowers3", "flowers5"];
 
@@ -203,68 +195,82 @@ const PhaserScene = (props) => {
           tilemap[i] = new Array(numTiles);
         }
 
+        let tileGrid = [];
+
         //Initiate Perlin Noise
         const sketch = new p5();
-        for (let row = 0; row < numTiles; row++) { // Iterate over each row in the grid
-          for (let col = 0; col < numTiles; col++) { // Iterate over each column in the grid for the current row
+        for (let row = 0; row < numTiles; row++) {
+          tileGrid[row] = []
+          // Iterate over each row in the grid
+          for (let col = 0; col < numTiles; col++) {
+            // Iterate over each column in the grid for the current row
             const tileX = col * tileSize; // Calculate the x position of the current tile in pixels
             const tileY = row * tileSize; // Calculate the y position of the current tile in pixels
-        
+
             // Use Perlin noise to generate a smooth, natural-looking terrain height value
-            const terrainNoise = sketch.noise(col / 10, row / 10); 
-        
+            const terrainNoise = sketch.noise(col / 10, row / 10);
+
             // Use Perlin noise to generate a value for texture variation
             const textureNoise = sketch.noise(
               (col + 100) / 10,
               (row + 100) / 10
             );
-        
+
             let tileType; // Variable to store the type of the current tile
-        
+
             //Grass Tiles
-            if (terrainNoise < 0.5) { // If the terrain height is less than 0.5, the tile is a grass tile
+            if (terrainNoise < 0.5) {
+              // If the terrain height is less than 0.5, the tile is a grass tile
               const textureIndex = Math.floor(textureNoise * grassTiles.length);
               tileType = grassTiles[textureIndex]; // Select a grass tile type based on the texture noise
-        
+
               // Iterate over each type of grass asset
               treeAssets.forEach((foliageAsset) => {
-                // Randomly (2% chance) add a grass asset to the tile
                 if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; // Random rotation for the asset
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; // Random scale for the asset
+                  const randomRotation = Math.random() * 360;
+                  const randomScale =
+                    assetBaseScale +
+                    Math.random() * scaleVariation -
+                    scaleVariation / 2;
                   this.add
-                    .image(tileX, tileY, foliageAsset) // Add the grass asset to the scene at the tile's position
-                    .setOrigin(0) // Set the origin of the asset to its top left corner
-                    .setScale(randomScale) // Scale the asset by the random scale factor
-                    .setDepth(1) // Set the depth of the asset to 1, so it appears above the tile
-                    // .setAngle(randomRotation) // Rotate the asset by the random angle
+                    .image(tileX, tileY, foliageAsset)
+                    .setOrigin(0)
+                    .setScale(randomScale)
+                    .setDepth(1);
+                  // .setAngle(randomRotation)
                 }
               });
 
               // Bush Asset
               bushAssets.forEach((foliageAsset) => {
                 if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; 
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; 
+                  const randomRotation = Math.random() * 360;
+                  const randomScale =
+                    assetBaseScale +
+                    Math.random() * scaleVariation -
+                    scaleVariation / 2;
                   this.add
                     .image(tileX, tileY, foliageAsset)
                     .setOrigin(0)
                     .setScale(randomScale)
-                    .setDepth(1) 
-                    // .setAngle(randomRotation) 
+                    .setDepth(1);
+                  // .setAngle(randomRotation)
                 }
               });
-               // Fern Asset
-               fernAssets.forEach((foliageAsset) => {
+              // Fern Asset
+              fernAssets.forEach((foliageAsset) => {
                 if (Math.random() < 0.02) {
-                  const randomRotation = Math.random() * 360; 
-                  const randomScale = assetBaseScale + Math.random() * scaleVariation - scaleVariation / 2; 
+                  const randomRotation = Math.random() * 360;
+                  const randomScale =
+                    assetBaseScale +
+                    Math.random() * scaleVariation -
+                    scaleVariation / 2;
                   this.add
                     .image(tileX, tileY, foliageAsset)
                     .setOrigin(0)
                     .setScale(randomScale)
-                    .setDepth(1) 
-                    // .setAngle(randomRotation) 
+                    .setDepth(1);
+                  // .setAngle(randomRotation)
                 }
               });
             } else {
@@ -283,16 +289,19 @@ const PhaserScene = (props) => {
                     .image(tileX, tileY, rockAsset)
                     .setOrigin(0)
                     .setScale(randomScale)
-                    .setDepth(1)
-                    // .setAngle(randomRotation);
+                    .setDepth(1);
+                  // .setAngle(randomRotation);
                 }
               });
             }
 
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
+            // Add the tile type to the tileArray
+            tileGrid[row][col] = tileType; 
           }
         }
+        console.log(tileGrid)
       }
     }
     // Create a new Phaser game instance
@@ -314,20 +323,21 @@ const PhaserScene = (props) => {
 
   // Define the restartScene function
   const restartScene = () => {
-    if (gameRef.current) {
-      const sceneKey = "myScene";
-      const sceneManager = gameRef.current.scene;
-      const scene = sceneManager.keys[sceneKey];
-      if (scene) {
-        for (let i = 0; i < scene.gameObjects.length; i++) {
-          scene.gameObjects[i].destroy();
-        }
-        scene.gameObjects = [];
-        sceneManager.stop(sceneKey);
-        sceneManager.start(sceneKey);
-      }
-      setSeed(Math.random());
-    }
+    
+    // if (gameRef.current) {
+    //   const sceneKey = "myScene";
+    //   const sceneManager = gameRef.current.scene;
+    //   const scene = sceneManager.keys[sceneKey];
+    //   if (scene) {
+    //     for (let i = 0; i < scene.gameObjects.length; i++) {
+    //       scene.gameObjects[i].destroy();
+    //     }
+    //     scene.gameObjects = [];
+    //     sceneManager.stop(sceneKey);
+    //     sceneManager.start(sceneKey);
+    //   }
+    //   setSeed(Math.random());
+    // }
   };
 
   return (
