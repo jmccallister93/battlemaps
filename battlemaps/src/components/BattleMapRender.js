@@ -7,12 +7,19 @@ import { useState, useEffect, useRef } from "react";
 
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
+  const [rerenderTrigger, setRerenderTrigger] = useState(0);
+  const [noiseOffset, setNoiseOffset] = useState(0);
   const containerRef = useRef();
   const myP5 = useRef();
   const sketchRef = useRef();
 
   const handleSizeChange = (event) => {
     setSize(event.target.value);
+  };
+
+  const rerenderCanvas = () => {
+    setRerenderTrigger((prevTrigger) => prevTrigger + 1);
+    setNoiseOffset(Math.random() * 10000); 
   };
 
   const getSizeWidth = () => {
@@ -69,7 +76,7 @@ const BattleMapRender = (props) => {
     containerRef.current.style.height = `${height}px`;
 
     if (myP5.current) {
-        myP5.current.remove();
+      myP5.current.remove();
     }
 
     myP5.current = new p5((p) => {
@@ -91,7 +98,7 @@ const BattleMapRender = (props) => {
         p.background(220);
         for (let i = 0; i < tilesX; i++) {
           for (let j = 0; j < tilesY; j++) {
-            let noiseVal = p.noise(i * 0.1, j * 0.1);
+            let noiseVal = p.noise((i * 0.1) + noiseOffset, (j * 0.1) + noiseOffset);
             if (noiseVal < 0.5) {
               p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
             } else {
@@ -113,18 +120,19 @@ const BattleMapRender = (props) => {
     });
 
     return () => {
-        if (myP5.current) {
-          myP5.current.remove();
-        }
-      };
-    
-  }, [size]);
+      if (myP5.current) {
+        myP5.current.remove();
+      }
+    };
+  }, [size, rerenderTrigger]);
 
-  
   return (
     <>
       <div className={s.mapContainer}>
         <div className={s.settings}>
+          <button onClick={rerenderCanvas} className={s.resetMapBtn}>
+            Reset Map
+          </button>
           <SizeSelector size={size} handleSizeChange={handleSizeChange} />
         </div>
         <div ref={containerRef} />
