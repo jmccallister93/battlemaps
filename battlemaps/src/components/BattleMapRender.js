@@ -2,6 +2,7 @@ import s from "../style/main.module.scss";
 import SizeSelector from "./SizeSelector";
 import grass from "../assets/GrassTile/grassTileMain.png";
 import dirt from "../assets/DirtTile/dirtTileMain.png";
+import test from "../assets/BricksTile/Bricks_01-128x128.png";
 import p5 from "p5";
 import { useState, useEffect, useRef } from "react";
 
@@ -64,6 +65,7 @@ const BattleMapRender = (props) => {
 
   const tileSize = 20; // change to match your tile size
 
+  //Initial render and nosie generation for tile
   useEffect(() => {
     let width, height;
 
@@ -143,6 +145,7 @@ const BattleMapRender = (props) => {
     };
   }, [size, rerenderTrigger]);
 
+  //Check touching tiles
   useEffect(() => {
     const sketch = (p) => {
       p.setup = () => {
@@ -207,20 +210,52 @@ const BattleMapRender = (props) => {
             }
 
             newTiles[i][j].touching = touching;
-            console.log(touching)
           }
         }
 
         setTiles(newTiles);
       };
     };
-    
+
     new p5(sketch);
   }, [rerenderTrigger]);
 
   useEffect(() => {
-    console.log(tiles);
-  }, [tiles])
+    let replacementTiles = tiles.map((row) =>
+      row.map((tile) => {
+        if (Object.keys(tile.touching).length > 0) {
+          // This tile has some neighboring tiles of different types
+          // Now we need to decide which replacement tile to use based on the `touching` property
+          let replacementTile;
+
+          if (tile.touching.grass) {
+            if (
+              tile.touching.grass.top &&
+              tile.touching.grass.topLeft &&
+              tile.touching.grass.topRight &&
+              tile.touching.grass.bottom &&
+              tile.touching.grass.bottomLeft &&
+              tile.touching.grass.bottomRight &&
+              tile.touching.grass.left &&
+              tile.touching.grass.right
+            ) {
+              console.log("touching grass all directions");
+            }
+            replacementTile = test; // replace with actual replacement
+          }
+
+          return replacementTile || tile; // If no condition was met, return the original tile
+        }
+        return tile; // Return original tile if it's not touching any different tiles
+      })
+    );
+
+    // setTiles(replacementTiles);
+  }, [tiles]);
+
+  //   useEffect(() => {
+  //     console.log(tiles);
+  //   }, [tiles])
 
   return (
     <>
