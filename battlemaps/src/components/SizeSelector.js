@@ -1,8 +1,10 @@
 import React from 'react';
+import s from '../style/main.module.scss'
 
 const SizeSelector = ({ size, handleSizeChange }) => {
   return (
-    <div>
+    <div className={s.sizeRadio}>
+      <h3>Select Map Size</h3>
       <label>
         <input
           type="radio"
