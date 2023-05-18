@@ -224,15 +224,12 @@ const BattleMapRender = (props) => {
     let replacementTiles = tiles.map((row) =>
       row.map((tile) => {
         if (Object.keys(tile.touching).length > 0) {
-          // This tile has some neighboring tiles of different types
-          // Now we need to decide which replacement tile to use based on the `touching` property
           let replacementTile;
           function replaceTile(replacement) {
-            // Replace the tile with the specified replacement logic
-            // For example:
-            tile = console.log(replacement);
+            // tile = createNewTile(replacement);
+            tile = console.log("fired");
           }
-          if (tile.touching.grass) {
+          if (tile.touching.grass) {  
             const combinations = [
               {
                 directions: [
