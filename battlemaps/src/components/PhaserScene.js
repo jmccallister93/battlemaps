@@ -274,12 +274,15 @@ const PhaserScene = (props) => {
             const tileY = row * tileSize;
 
             // Use Perlin noise to generate a smooth, natural-looking terrain height value
-            const terrainNoise = sketch.noise(col / 10, row / 10);
+            const terrainNoise = sketch.noise(
+              col / 10 + noiseOffset,
+              row / 10 + noiseOffset
+            );
 
             // Use Perlin noise to generate a value for texture variation
             const textureNoise = sketch.noise(
-              (col + 100) / 10,
-              (row + 100) / 10
+              (col + 100) / 10 + noiseOffset,
+              (row + 100) / 10 + noiseOffset
             );
 
             let tileType; // Variable to store the type of the current tile
@@ -390,7 +393,7 @@ const PhaserScene = (props) => {
     return () => {
       gameRef.current.destroy(true);
     };
-  }, [size, seed]); // Empty dependency array ensures the effect runs only once
+  }, [size, seed, rerenderTrigger]); // Empty dependency array ensures the effect runs only once
 
   return (
     <>
