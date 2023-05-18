@@ -27,6 +27,7 @@ import smallBLBR from "../assets/GrassDirtEdges/smallBLBR.png";
 import smallBLTR from "../assets/GrassDirtEdges/smallBLTR.png";
 import smallTLTR from "../assets/GrassDirtEdges/smallTLTR.png";
 import smallTRBR from "../assets/GrassDirtEdges/smallTRBR.png";
+import smallBLTL from "../assets/GrassDirtEdges/smallBLTL.png";
 
 import splitLR from "../assets/GrassDirtEdges/splitLR.png";
 import splitTB from "../assets/GrassDirtEdges/splitTB.png";
@@ -163,6 +164,7 @@ const PhaserScene = (props) => {
 
         this.load.image("smallTLBR", smallTLBR);
         this.load.image("smallTRBL", smallTRBL);
+        this.load.image("smallBLTL", smallBLTL);
 
         
 
@@ -505,6 +507,34 @@ const PhaserScene = (props) => {
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
                 } else if (
+                  touching.grass.top &&
+                  touching.grass.bottom  
+                ) {
+                  let newTileType = "splitTB";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                }  else if (
+                  touching.grass.right &&
+                  touching.grass.left  
+                ) {
+                  let newTileType = "splitLR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                }else if (
                   touching.grass.bottom 
                 ) {
                   let newTileType = "edgeB";
@@ -602,7 +632,7 @@ const PhaserScene = (props) => {
                   touching.grass.bottomLeft &&
                   touching.grass.topRight  
                 ) {
-                  let newTileType = "smallBLTR";
+                  let newTileType = "smallTRBL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
                   let newTile = this.add
@@ -641,10 +671,10 @@ const PhaserScene = (props) => {
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
                 }  else if (
-                  touching.grass.top &&
-                  touching.grass.bottom  
+                  touching.grass.topLeft &&
+                  touching.grass.bottomLeft  
                 ) {
-                  let newTileType = "splitTB";
+                  let newTileType = "smallBLTL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
                   let newTile = this.add
@@ -655,20 +685,6 @@ const PhaserScene = (props) => {
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
                 }  else if (
-                  touching.grass.right &&
-                  touching.grass.left  
-                ) {
-                  let newTileType = "splitRL";
-                  const tileX = col * tileSize;
-                  const tileY = row * tileSize;
-                  let newTile = this.add
-                    .image(tileX, tileY, newTileType)
-                    .setOrigin(0)
-                    .setScale(0.25)
-                    .setRotation();
-                  this.gameObjects.push(newTile);
-                  tileGrid[row][col].type = newTileType;
-                } else if (
                   touching.grass.topRight 
                 ) {
                   let newTileType = "smallTR";
