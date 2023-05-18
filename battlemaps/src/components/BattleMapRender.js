@@ -227,23 +227,135 @@ const BattleMapRender = (props) => {
           // This tile has some neighboring tiles of different types
           // Now we need to decide which replacement tile to use based on the `touching` property
           let replacementTile;
-
-          if (tile.touching.grass) {
-            if (
-              tile.touching.grass.top &&
-              tile.touching.grass.topLeft &&
-              tile.touching.grass.topRight &&
-              tile.touching.grass.bottom &&
-              tile.touching.grass.bottomLeft &&
-              tile.touching.grass.bottomRight &&
-              tile.touching.grass.left &&
-              tile.touching.grass.right
-            ) {
-              console.log("touching grass all directions");
-            }
-            replacementTile = test; // replace with actual replacement
+          function replaceTile(replacement) {
+            // Replace the tile with the specified replacement logic
+            // For example:
+            tile = console.log(replacement);
           }
+          if (tile.touching.grass) {
+            const combinations = [
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                  "left",
+                  "topLeft",
+                ],
+                replacement: "replacement1",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                  "left",
+                ],
+                replacement: "replacement2",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                ],
+                replacement: "replacement3",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                ],
+                replacement: "replacement4",
+              },
+              {
+                directions: ["top", "topRight", "right", "bottomRight"],
+                replacement: "replacement5",
+              },
+              {
+                directions: ["top", "topRight", "right"],
+                replacement: "replacement6",
+              },
+              { directions: ["top", "topRight"], replacement: "replacement7" },
+              { directions: ["top"], replacement: "replacement8" },
+              { directions: ["topLeft"], replacement: "replacement9" },
+              { directions: ["left", "topLeft"], replacement: "replacement10" },
+              {
+                directions: ["left", "bottomLeft", "topLeft"],
+                replacement: "replacement11",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom", "topLeft"],
+                replacement: "replacement12",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "topLeft",
+                ],
+                replacement: "replacement13",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "right",
+                  "topLeft",
+                ],
+                replacement: "replacement14",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "right",
+                ],
+                replacement: "replacement15",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom", "bottomRight"],
+                replacement: "replacement16",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom"],
+                replacement: "replacement17",
+              },
+              {
+                directions: ["left", "bottomLeft"],
+                replacement: "replacement18",
+              },
+              { directions: ["bottomLeft"], replacement: "replacement19" },
+              { directions: [], replacement: "replacement20" },
+            ];
 
+            for (const combination of combinations) {
+                if (combination.directions.every(direction => tile.touching.grass[direction])) {
+                  replaceTile(combination.replacement);
+                  break; // Exit the loop if a match is found
+                }
+              }
+            
+          }
+          // replacementTile = test; // replace with actual replacement
           return replacementTile || tile; // If no condition was met, return the original tile
         }
         return tile; // Return original tile if it's not touching any different tiles
