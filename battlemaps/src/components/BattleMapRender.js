@@ -1,15 +1,15 @@
 import s from "../style/main.module.scss";
 import SizeSelector from "./SizeSelector";
-import grass from "../assets/GrassTile/grassTileMain.png"
-import dirt from "../assets/DirtTile/dirtTileMain.png"
+import grass from "../assets/GrassTile/grassTileMain.png";
+import dirt from "../assets/DirtTile/dirtTileMain.png";
 import p5 from "p5";
-import { useState, useEffect, useRef } from "react" 
+import { useState, useEffect, useRef } from "react";
 
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
   const containerRef = useRef();
   const myP5 = useRef();
-  const sketchRef = useRef()
+  const sketchRef = useRef();
 
   const handleSizeChange = (event) => {
     setSize(event.target.value);
@@ -45,7 +45,6 @@ const BattleMapRender = (props) => {
 
   const tileSize = 20; // change to match your tile size
 
-
   useEffect(() => {
     let width, height;
 
@@ -69,7 +68,11 @@ const BattleMapRender = (props) => {
     containerRef.current.style.width = `${width}px`;
     containerRef.current.style.height = `${height}px`;
 
-    myP5.current = new p5(p => {
+    if (myP5.current) {
+        myP5.current.remove();
+    }
+
+    myP5.current = new p5((p) => {
       let imgGrass;
       let imgDirt;
 
@@ -98,21 +101,33 @@ const BattleMapRender = (props) => {
         }
       };
 
+      p.remove = (() => {
+        const originalRemove = p.remove;
+        return () => {
+          originalRemove.call(p);
+          if (containerRef.current.firstChild) {
+            containerRef.current.firstChild.remove();
+          }
+        };
+      })();
     });
 
-    return () => myP5.current.remove();
-
+    return () => {
+        if (myP5.current) {
+          myP5.current.remove();
+        }
+      };
+    
   }, [size]);
 
+  
   return (
     <>
-       <div className={s.mapContainer}>
+      <div className={s.mapContainer}>
         <div className={s.settings}>
           <SizeSelector size={size} handleSizeChange={handleSizeChange} />
         </div>
-        <div className={s.sceneContainer}>
-          <div ref={containerRef} style={{ border: "1px solid black" }} />
-        </div>
+        <div ref={containerRef} />
       </div>
     </>
   );
