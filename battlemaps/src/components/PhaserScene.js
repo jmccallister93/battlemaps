@@ -111,7 +111,6 @@ const PhaserScene = (props) => {
     }
   };
 
-
   useEffect(() => {
     let height, width;
 
@@ -212,15 +211,14 @@ const PhaserScene = (props) => {
         const tileSize = 32; // Size of each tile in pixels
         const numTiles = 32; // Number of tiles in the scene
 
-        this.cameras.main.setSize(960, 960); // Set the size of the camera to match the scene
+        const numTilesWidth = Math.ceil(width / tileSize);
+        const numTilesHeight = Math.ceil(height / tileSize);
+
+        this.cameras.main.setSize(width, height); // Set the size of the camera to match the scene
 
         //Set Tiles Arrays
-        const grassTiles = [
-          "grass",
-        ];
-        const dirtTiles = [
-          "dirt",
-        ];
+        const grassTiles = ["grass"];
+        const dirtTiles = ["dirt"];
 
         //Set Asset Arrays
         const rockAssets = [
@@ -239,11 +237,7 @@ const PhaserScene = (props) => {
           "foliage9",
           "foliage10",
         ];
-        const bushAssets = [
-          "bush1",
-          "bush2",
-          "bush3",
-        ];
+        const bushAssets = ["bush1", "bush2", "bush3"];
         const fernAssets = ["fern1", "fern2", "fern3"];
         const flowerAssets = ["flower5", "flower6"];
         const flowersAssets = ["flowers1", "flowers2", "flowers3", "flowers5"];
@@ -263,19 +257,19 @@ const PhaserScene = (props) => {
         const scaleVariation = 0.3;
 
         // Initialize an empty 2D array to represent your tilemap
-        let tilemap = new Array(numTiles);
-        for (let i = 0; i < numTiles; i++) {
-          tilemap[i] = new Array(numTiles);
+        let tilemap = new Array(numTilesWidth);
+        for (let i = 0; i < numTilesWidth; i++) {
+          tilemap[i] = new Array(numTilesHeight);
         }
 
         let tileGrid = [];
 
         //Initiate Perlin Noise
         const sketch = new p5();
-        for (let row = 0; row < numTiles; row++) {
+        for (let row = 0; row < numTilesHeight; row++) {
           tileGrid[row] = [];
           // Iterate over each row in the grid
-          for (let col = 0; col < numTiles; col++) {
+          for (let col = 0; col < numTilesWidth; col++) {
             const tileX = col * tileSize;
             const tileY = row * tileSize;
 
@@ -370,12 +364,10 @@ const PhaserScene = (props) => {
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
 
-
             // Add the tile type to the tileArray
             tileGrid[row][col] = tileType;
           }
         }
-        
       }
     }
 
@@ -383,14 +375,14 @@ const PhaserScene = (props) => {
       gameRef.current.destroy(true);
     }
 
-  // Create a new Phaser game instance with the updated dimensions
-  gameRef.current = new Phaser.Game({
-    type: Phaser.AUTO,
-    parent: phaserContainerRef.current,
-    width: width,  // use the updated width
-    height: height,  // use the updated height
-    scene: [MyScene],
-  });
+    // Create a new Phaser game instance with the updated dimensions
+    gameRef.current = new Phaser.Game({
+      type: Phaser.AUTO,
+      parent: phaserContainerRef.current,
+      width: width, // use the updated width
+      height: height, // use the updated height
+      scene: [MyScene],
+    });
 
     // gameRef.current = gameRef.current;
 
@@ -399,8 +391,6 @@ const PhaserScene = (props) => {
       gameRef.current.destroy(true);
     };
   }, [size, seed]); // Empty dependency array ensures the effect runs only once
-
-  
 
   return (
     <>
@@ -412,7 +402,10 @@ const PhaserScene = (props) => {
           </button>
           <SizeSelector size={size} handleSizeChange={handleSizeChange} />
         </div>
-        <div ref={phaserContainerRef} style={{ width: "100%", height: "100%" }} />
+        <div
+          ref={phaserContainerRef}
+          // style={{ width: "100%", height: "100%" }}
+        />
       </div>
     </>
   );
