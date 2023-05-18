@@ -26,7 +26,7 @@ const BattleMapRender = (props) => {
         case 'small':
           return '560px';
         case 'large':
-          return '720px';
+          return '960px';
         default:
           return '750px'; // medium size
       }
@@ -38,14 +38,16 @@ const BattleMapRender = (props) => {
         border: '1px solid black',
       };
   
-    return (
-        <div className="container">
-        <SizeSelector size={size} handleSizeChange={handleSizeChange} />
+    return (<>
+    <SizeSelector size={size} handleSizeChange={handleSizeChange} />
+        <div className={s.sceneContainer}>
+        
         <div style={containerStyle}>
           {/* Your component content */}
           Hello
         </div>
       </div>
+      </>
     );
 }
  
