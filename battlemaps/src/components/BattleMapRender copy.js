@@ -2,8 +2,39 @@ import s from "../style/main.module.scss";
 import SizeSelector from "./SizeSelector";
 import grass from "../assets/GrassTile/grassTileMain.png";
 import dirt from "../assets/DirtTile/dirtTileMain.png";
+
+import edgeL from "../assets/GrassDirtEdges/edgeLeft.png";
+import edgeT from "../assets/GrassDirtEdges/edgeTop.png";
+import edgeR from "../assets/GrassDirtEdges/edgeRight.png";
+import edgeB from "../assets/GrassDirtEdges/edgeBottom.png";
+
+import cornerTL from "../assets/GrassDirtEdges/cornerTopLeft.png";
+import cornerBL from "../assets/GrassDirtEdges/cornerBottomLeft.png";
+import cornerTR from "../assets/GrassDirtEdges/cornerTopRight.png";
+import cornerBR from "../assets/GrassDirtEdges/cornerBottomRight.png";
+
+import smallTL from "../assets/GrassDirtEdges/smallTL.png";
+import smallTR from "../assets/GrassDirtEdges/smallTR.png";
+import smallBL from "../assets/GrassDirtEdges/smallBL.png";
+import smallBR from "../assets/GrassDirtEdges/smallBR.png";
+import smallTLBR from "../assets/GrassDirtEdges/smallTLBR.png";
+import smallTRBL from "../assets/GrassDirtEdges/smallTRBL.png";
+
+import splitLR from "../assets/GrassDirtEdges/splitLR.png";
+import splitTB from "../assets/GrassDirtEdges/splitTB.png";
+
+import islandM from "../assets/GrassDirtEdges/islandMid.png";
+import islandT from "../assets/GrassDirtEdges/islandT.png";
+import islandB from "../assets/GrassDirtEdges/islandB.png";
+import islandL from "../assets/GrassDirtEdges/islandL.png";
+import islandR from "../assets/GrassDirtEdges/islandR.png";
+
 import p5 from "p5";
 import { useState, useEffect, useRef } from "react";
+
+const tileSize = 20;
+const rows = 50;
+const cols = 50;
 
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
@@ -13,13 +44,21 @@ const BattleMapRender = (props) => {
   const myP5 = useRef();
   const sketchRef = useRef();
 
+  const [tiles, setTiles] = useState(() => {
+    const arr = new Array(rows);
+    for (let i = 0; i < rows; i++) {
+      arr[i] = new Array(cols);
+    }
+    return arr;
+  });
+
   const handleSizeChange = (event) => {
     setSize(event.target.value);
   };
 
   const rerenderCanvas = () => {
     setRerenderTrigger((prevTrigger) => prevTrigger + 1);
-    setNoiseOffset(Math.random() * 10000); 
+    setNoiseOffset(Math.random() * 10000);
   };
 
   const getSizeWidth = () => {
@@ -52,6 +91,7 @@ const BattleMapRender = (props) => {
 
   const tileSize = 20; // change to match your tile size
 
+  //Initial render and nosie generation for tile
   useEffect(() => {
     let width, height;
 
@@ -99,7 +139,11 @@ const BattleMapRender = (props) => {
         p.blendMode(p.BLEND);
         for (let i = 0; i < tilesX; i++) {
           for (let j = 0; j < tilesY; j++) {
-            let noiseVal = p.noise((i * 0.1) + noiseOffset, (j * 0.1) + noiseOffset);
+            let noiseVal = p.noise(
+              i * 0.1 + noiseOffset,
+              j * 0.1 + noiseOffset
+            );
+
             if (noiseVal < 0.5) {
               p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
             } else {
@@ -127,11 +171,278 @@ const BattleMapRender = (props) => {
     };
   }, [size, rerenderTrigger]);
 
+  //Check touching tiles
+  useEffect(() => {
+    const sketch = (p) => {
+      p.setup = () => {
+        p.createCanvas(1, 1);
+        p.noLoop();
+
+        const newTiles = [...tiles];
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const noiseVal = p.noise(
+              i * 0.1 + noiseOffset,
+              j * 0.1 + noiseOffset
+            );
+            newTiles[i][j] = {
+              type: noiseVal < 0.5 ? "grass" : "dirt",
+              touching: {},
+            };
+          }
+        }
+
+        // Now we check each tile for its neighbours
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            let touching = {};
+
+            // Define the directions
+            const directions = [
+              "top",
+              "topRight",
+              "right",
+              "bottomRight",
+              "bottom",
+              "bottomLeft",
+              "left",
+              "topLeft",
+            ];
+            const dRows = [-1, -1, 0, 1, 1, 1, 0, -1];
+            const dCols = [0, 1, 1, 1, 0, -1, -1, -1];
+
+            // Check the 8 neighboring tiles
+            for (let k = 0; k < directions.length; k++) {
+              const di = dRows[k];
+              const dj = dCols[k];
+              // Skip if it's out of bounds
+              if (
+                i + di < 0 ||
+                i + di >= rows ||
+                j + dj < 0 ||
+                j + dj >= cols
+              ) {
+                continue;
+              }
+
+              const neighborTile = newTiles[i + di][j + dj];
+              // Compare types
+              if (neighborTile.type !== newTiles[i][j].type) {
+                if (!touching[neighborTile.type]) {
+                  touching[neighborTile.type] = {};
+                }
+                touching[neighborTile.type][directions[k]] = true;
+              }
+            }
+
+            newTiles[i][j].touching = touching;
+          }
+        }
+
+        setTiles(newTiles);
+      };
+    };
+
+    new p5(sketch);
+  }, [rerenderTrigger]);
+
+  useEffect(() => {
+    function createNewTile(replacement) {
+      switch (replacement) {
+        case "replacement1":
+          return islandM;
+        case "replacement2":
+          return islandR;
+        case "replacement3":
+          return islandR;
+        case "replacement4":
+          return islandR;
+        case "replacement5":
+          return islandR;
+        case "replacement6":
+          return cornerTR;
+        case "replacement7":
+          return edgeT;
+        case "replacement8":
+          return edgeT;
+        case "replacement9":
+          return smallTL;
+        case "replacement10":
+          return edgeL;
+        case "replacement11":
+          return edgeL;
+        case "replacement12":
+          return cornerBL;
+        case "replacement13":
+          return cornerBL;
+        case "replacement14":
+          return islandB;
+        case "replacement15":
+          return islandB;
+        case "replacement16":
+          return cornerBL;
+        case "replacement17":
+          return cornerBL;
+        case "replacement18":
+          return edgeL;
+        case "replacement19":
+          return smallBL;
+        default:
+          return null;
+      }
+    }
+
+    let replacementTiles = tiles.map((row) =>
+      row.map((tile) => {
+        if (Object.keys(tile.touching).length > 0) {
+          let replacementTile;
+          function replaceTile(replacement) {
+            tile = createNewTile(replacement);
+          }
+          if (tile.touching.grass) {
+            const combinations = [
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                  "left",
+                  "topLeft",
+                ],
+                replacement: "replacement1",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                  "left",
+                ],
+                replacement: "replacement2",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                  "bottomLeft",
+                ],
+                replacement: "replacement3",
+              },
+              {
+                directions: [
+                  "top",
+                  "topRight",
+                  "right",
+                  "bottomRight",
+                  "bottom",
+                ],
+                replacement: "replacement4",
+              },
+              {
+                directions: ["top", "topRight", "right", "bottomRight"],
+                replacement: "replacement5",
+              },
+              {
+                directions: ["top", "topRight", "right"],
+                replacement: "replacement6",
+              },
+              { directions: ["top", "topRight"], replacement: "replacement7" },
+              { directions: ["top"], replacement: "replacement8" },
+              { directions: ["topLeft"], replacement: "replacement9" },
+              { directions: ["left", "topLeft"], replacement: "replacement10" },
+              {
+                directions: ["left", "bottomLeft", "topLeft"],
+                replacement: "replacement11",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom", "topLeft"],
+                replacement: "replacement12",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "topLeft",
+                ],
+                replacement: "replacement13",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "right",
+                  "topLeft",
+                ],
+                replacement: "replacement14",
+              },
+              {
+                directions: [
+                  "left",
+                  "bottomLeft",
+                  "bottom",
+                  "bottomRight",
+                  "right",
+                ],
+                replacement: "replacement15",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom", "bottomRight"],
+                replacement: "replacement16",
+              },
+              {
+                directions: ["left", "bottomLeft", "bottom"],
+                replacement: "replacement17",
+              },
+              {
+                directions: ["left", "bottomLeft"],
+                replacement: "replacement18",
+              },
+              { directions: ["bottomLeft"], replacement: "replacement19" },
+              { directions: [], replacement: "replacement20" },
+            ];
+
+            for (const combination of combinations) {
+              if (
+                combination.directions.every(
+                  (direction) => tile.touching.grass[direction]
+                )
+              ) {
+                replaceTile(combination.replacement);
+                break; // Exit the loop if a match is found
+              }
+            }
+          }
+          // replacementTile = test; // replace with actual replacement
+          return replacementTile || tile; // If no condition was met, return the original tile
+        }
+        return tile; // Return original tile if it's not touching any different tiles
+      })
+    );
+    // setTiles(replacementTiles);
+  }, [tiles]);
+
+  //   useEffect(() => {
+  //     console.log(tiles);
+  //   }, [tiles])
+
   return (
     <>
       <div className={s.mapContainer}>
         <div className={s.settings}>
-        <div class={s.imageContainer}></div>
+          <div className={s.imageContainer}></div>
           <button onClick={rerenderCanvas} className={s.resetMapBtn}>
             Reset Map
           </button>
