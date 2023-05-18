@@ -115,7 +115,7 @@ const BattleMapRender = (props) => {
               i * 0.1 + noiseOffset,
               j * 0.1 + noiseOffset
             );
-            
+
             if (noiseVal < 0.5) {
               p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
             } else {
@@ -143,11 +143,90 @@ const BattleMapRender = (props) => {
     };
   }, [size, rerenderTrigger]);
 
+  useEffect(() => {
+    const sketch = (p) => {
+      p.setup = () => {
+        p.createCanvas(1, 1);
+        p.noLoop();
+
+        const newTiles = [...tiles];
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const noiseVal = p.noise(
+              i * 0.1 + noiseOffset,
+              j * 0.1 + noiseOffset
+            );
+            newTiles[i][j] = {
+              type: noiseVal < 0.5 ? "grass" : "dirt",
+              touching: {},
+            };
+          }
+        }
+
+        // Now we check each tile for its neighbours
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            let touching = {};
+
+            // Define the directions
+            const directions = [
+              "top",
+              "topRight",
+              "right",
+              "bottomRight",
+              "bottom",
+              "bottomLeft",
+              "left",
+              "topLeft",
+            ];
+            const dRows = [-1, -1, 0, 1, 1, 1, 0, -1];
+            const dCols = [0, 1, 1, 1, 0, -1, -1, -1];
+
+            // Check the 8 neighboring tiles
+            for (let k = 0; k < directions.length; k++) {
+              const di = dRows[k];
+              const dj = dCols[k];
+              // Skip if it's out of bounds
+              if (
+                i + di < 0 ||
+                i + di >= rows ||
+                j + dj < 0 ||
+                j + dj >= cols
+              ) {
+                continue;
+              }
+
+              const neighborTile = newTiles[i + di][j + dj];
+              // Compare types
+              if (neighborTile.type !== newTiles[i][j].type) {
+                if (!touching[neighborTile.type]) {
+                  touching[neighborTile.type] = {};
+                }
+                touching[neighborTile.type][directions[k]] = true;
+              }
+            }
+
+            newTiles[i][j].touching = touching;
+            console.log(touching)
+          }
+        }
+
+        setTiles(newTiles);
+      };
+    };
+    
+    new p5(sketch);
+  }, [rerenderTrigger]);
+
+  useEffect(() => {
+    console.log(tiles);
+  }, [tiles])
+
   return (
     <>
       <div className={s.mapContainer}>
         <div className={s.settings}>
-          <div class={s.imageContainer}></div>
+          <div className={s.imageContainer}></div>
           <button onClick={rerenderCanvas} className={s.resetMapBtn}>
             Reset Map
           </button>
