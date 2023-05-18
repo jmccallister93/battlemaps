@@ -289,22 +289,90 @@ const PhaserScene = (props) => {
 
             //Grass Tiles
             if (terrainNoise < 0.5) {
+              // If the terrain height is less than 0.5, the tile is a grass tile
               const textureIndex = Math.floor(textureNoise * grassTiles.length);
-              tileType = grassTiles[textureIndex]; 
+              tileType = grassTiles[textureIndex]; // Select a grass tile type based on the texture noise
+
+              // Iterate over each type of grass asset
+              // treeAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
+
+              // Bush Asset
+              // bushAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
+              // Fern Asset
+              // fernAssets.forEach((foliageAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, foliageAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation)
+              //   }
+              // });
             } else {
               //Dirt tiles
               const textureIndex = Math.floor(textureNoise * dirtTiles.length);
               tileType = dirtTiles[textureIndex];
+              //Rock Assets
+              // rockAssets.forEach((rockAsset) => {
+              //   if (Math.random() < 0.02) {
+              //     const randomRotation = Math.random() * 360;
+              //     const randomScale =
+              //       assetBaseScale +
+              //       Math.random() * scaleVariation -
+              //       scaleVariation / 2;
+              //     this.add
+              //       .image(tileX, tileY, rockAsset)
+              //       .setOrigin(0)
+              //       .setScale(randomScale)
+              //       .setDepth(1);
+              //     // .setAngle(randomRotation);
+              //   }
+              // });
             }
 
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
 
             // Add the tile type to the tileArray
-            tileGrid[row][col] = {type: tileType, touching: {}};
+            tileGrid[row][col] = tileType;
           }
         }
-
+        //touching tiles
+        let touching = {};
         // Define the directions
         const directions = [
           "top",
@@ -318,11 +386,10 @@ const PhaserScene = (props) => {
         ];
         const dRows = [-1, -1, 0, 1, 1, 1, 0, -1];
         const dCols = [0, 1, 1, 1, 0, -1, -1, -1];
-
+        const newTiles = [...tileGrid];
         // Go through the tileGrid again to replace tiles
-        for (let row = 0; row < numTilesHeight; row++) {
-          for (let col = 0; col < numTilesWidth; col++) {
-            let touching = {};
+        for (let row = 0; row < numTiles; row++) {
+          for (let col = 0; col < numTiles; col++) {
             // Check the 8 neighboring tiles
             for (let k = 0; k < directions.length; k++) {
               const di = dRows[k];
@@ -330,25 +397,24 @@ const PhaserScene = (props) => {
               // Skip if it's out of bounds
               if (
                 row + di < 0 ||
-                row + di >= numTilesHeight  ||
+                row + di >= row ||
                 col + dj < 0 ||
-                col + dj >= numTilesWidth
+                col + dj >= col
               ) {
                 continue;
               }
-              const neighborTile = tileGrid[row + di][col + dj];
+              const neighborTile = newTiles[row + di][col + dj];
               // Compare types
-              if (neighborTile.type !== tileGrid[row][col].type) {
+              if (neighborTile.type !== newTiles[row][col].type) {
                 if (!touching[neighborTile.type]) {
                   touching[neighborTile.type] = {};
                 }
                 touching[neighborTile.type][directions[k]] = true;
               }
             }
-            tileGrid[row][col].touching = touching;
+            newTiles[row][col].touching = touching;
           }
         }
-        console.log(tileGrid);
       }
     }
 
