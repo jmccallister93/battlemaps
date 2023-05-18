@@ -2,32 +2,32 @@ import React, { useRef, useEffect, useState } from "react";
 import Phaser from "phaser";
 import p5 from "p5";
 
-import grass5 from "../assets/GrassTile/grassTileMain.png";
-import grass8 from "../assets/GrassTile/Grass_08-128x128.png";
-import grass21 from "../assets/GrassTile/Grass_21-128x128.png";
+import s from "../style/main.module.scss";
+import SizeSelector from "./SizeSelector";
+import grass from "../assets/GrassTile/grassTileMain.png";
+import dirt from "../assets/DirtTile/dirtTileMain.png";
 
-import dirt1 from "../assets/DirtTile/Dirt_01-128x128.png";
-import dirt2 from "../assets/DirtTile/Dirt_02-128x128.png";
-import dirt9 from "../assets/DirtTile/dirtTileMain.png";
+import edgeL from "../assets/GrassDirtEdges/edgeLeft.png";
+import edgeT from "../assets/GrassDirtEdges/edgeTop.png";
+import edgeR from "../assets/GrassDirtEdges/edgeRight.png";
+import edgeB from "../assets/GrassDirtEdges/edgeBottom.png";
 
-import edgeLeft from "../assets/GrassDirtEdges/edgeLeft.png";
-import edgeTop from "../assets/GrassDirtEdges/edgeTop.png";
-import edgeRight from "../assets/GrassDirtEdges/edgeRight.png";
-import edgeBottom from "../assets/GrassDirtEdges/edgeBottom.png";
-
-import cornerTopLeft from "../assets/GrassDirtEdges/cornerTopLeft.png";
-import cornerBottomLeft from "../assets/GrassDirtEdges/cornerBottomLeft.png";
-import cornerTopRight from "../assets/GrassDirtEdges/cornerTopRight.png";
-import cornerBottomRight from "../assets/GrassDirtEdges/cornerBottomRight.png";
+import cornerTL from "../assets/GrassDirtEdges/cornerTopLeft.png";
+import cornerBL from "../assets/GrassDirtEdges/cornerBottomLeft.png";
+import cornerTR from "../assets/GrassDirtEdges/cornerTopRight.png";
+import cornerBR from "../assets/GrassDirtEdges/cornerBottomRight.png";
 
 import smallTL from "../assets/GrassDirtEdges/smallTL.png";
 import smallTR from "../assets/GrassDirtEdges/smallTR.png";
 import smallBL from "../assets/GrassDirtEdges/smallBL.png";
 import smallBR from "../assets/GrassDirtEdges/smallBR.png";
+import smallTLBR from "../assets/GrassDirtEdges/smallTLBR.png";
+import smallTRBL from "../assets/GrassDirtEdges/smallTRBL.png";
 
 import splitLR from "../assets/GrassDirtEdges/splitLR.png";
 import splitTB from "../assets/GrassDirtEdges/splitTB.png";
 
+import islandM from "../assets/GrassDirtEdges/islandMid.png";
 import islandT from "../assets/GrassDirtEdges/islandT.png";
 import islandB from "../assets/GrassDirtEdges/islandB.png";
 import islandL from "../assets/GrassDirtEdges/islandL.png";
@@ -78,8 +78,56 @@ const PhaserScene = (props) => {
   const phaserContainerRef = useRef(null);
   const gameRef = useRef(null);
   const [seed, setSeed] = useState(Math.random());
+  const [size, setSize] = useState("medium");
+  const [rerenderTrigger, setRerenderTrigger] = useState(0);
+  const [noiseOffset, setNoiseOffset] = useState(0);
+
+  const rerenderCanvas = () => {
+    setRerenderTrigger((prevTrigger) => prevTrigger + 1);
+    setNoiseOffset(Math.random() * 10000);
+  };
+
+  const handleSizeChange = (event) => {
+    setSize(event.target.value);
+  };
+  const getSizeWidth = () => {
+    switch (size) {
+      case "small":
+        return "560px";
+      case "large":
+        return "1280px";
+      default:
+        return "960px"; // medium size
+    }
+  };
+  const getSizeHeight = () => {
+    switch (size) {
+      case "small":
+        return "560px";
+      case "large":
+        return "960px";
+      default:
+        return "750px"; // medium size
+    }
+  };
+
 
   useEffect(() => {
+    let height, width;
+
+    switch (size) {
+      case "small":
+        width = 560;
+        height = 560;
+        break;
+      case "large":
+        width = 1280;
+        height = 960;
+        break;
+      default: // medium size
+        width = 960;
+        height = 750;
+    }
     // Create a new Phaser scene
     class MyScene extends Phaser.Scene {
       constructor() {
@@ -87,23 +135,19 @@ const PhaserScene = (props) => {
       }
 
       preload() {
-        this.load.image("dirt1", dirt1);
-        this.load.image("dirt2", dirt2);
-        this.load.image("dirt9", dirt9);
+        this.load.image("dirt", dirt);
 
-        this.load.image("grass5", grass5);
-        this.load.image("grass8", grass8);
-        this.load.image("grass21", grass21);
+        this.load.image("grass", grass);
 
-        this.load.image("edgeTop", edgeTop);
-        this.load.image("edgeRight", edgeRight);
-        this.load.image("edgeBottom", edgeBottom);
-        this.load.image("edgeLeft", edgeLeft);
+        this.load.image("edgeT", edgeT);
+        this.load.image("edgeR", edgeR);
+        this.load.image("edgeB", edgeB);
+        this.load.image("edgeL", edgeL);
 
-        this.load.image("cornerTR", cornerTopRight);
-        this.load.image("cornerBR", cornerBottomRight);
-        this.load.image("cornerTL", cornerTopLeft);
-        this.load.image("cornerBL", cornerBottomLeft);
+        this.load.image("cornerTR", cornerTR);
+        this.load.image("cornerBR", cornerBR);
+        this.load.image("cornerTL", cornerTL);
+        this.load.image("cornerBL", cornerBL);
 
         this.load.image("smallTL", smallTL);
         this.load.image("smallTR", smallTR);
@@ -117,6 +161,7 @@ const PhaserScene = (props) => {
         this.load.image("islandB", islandB);
         this.load.image("islandL", islandL);
         this.load.image("islandR", islandR);
+        this.load.image("islandM", islandM);
 
         this.load.image("treeTop1", treeTop1);
         this.load.image("treeTop2", treeTop2);
@@ -171,18 +216,10 @@ const PhaserScene = (props) => {
 
         //Set Tiles Arrays
         const grassTiles = [
-          "grass5",
-          // "grass8",
-          // "grass21",
-          // "grassCorner5",
-          // "grassEdge5",
-          // "corner",
-          // "edge"
+          "grass",
         ];
         const dirtTiles = [
-          // "dirt1",
-          // "dirt2",
-          "dirt9",
+          "dirt",
         ];
 
         //Set Asset Arrays
@@ -206,12 +243,6 @@ const PhaserScene = (props) => {
           "bush1",
           "bush2",
           "bush3",
-          // "bush4",
-          // "bush5",
-          // "bush6",
-          // "bush7",
-          // "bush8",
-          // "bush19",
         ];
         const fernAssets = ["fern1", "fern2", "fern3"];
         const flowerAssets = ["flower5", "flower6"];
@@ -339,15 +370,6 @@ const PhaserScene = (props) => {
             let tile = this.add.image(tileX, tileY, tileType).setOrigin(0);
             this.gameObjects.push(tile);
 
-            // After tile creation, apply the mask
-            let graphics = this.add.graphics();
-            graphics.fillCircle(
-              tileX + tileSize / 2,
-              tileY + tileSize / 2,
-              tileSize * 4
-            );
-            let mask = new Phaser.Display.Masks.GeometryMask(this, graphics);
-            tile.setMask(mask);
 
             // Add the tile type to the tileArray
             tileGrid[row][col] = tileType;
@@ -356,29 +378,42 @@ const PhaserScene = (props) => {
         
       }
     }
-    // Create a new Phaser game instance
-    const game = new Phaser.Game({
-      type: Phaser.AUTO,
-      parent: phaserContainerRef.current,
-      width: 960,
-      height: 960,
-      scene: [MyScene],
-    });
 
-    gameRef.current = game;
+    if (gameRef.current) {
+      gameRef.current.destroy(true);
+    }
+
+  // Create a new Phaser game instance with the updated dimensions
+  gameRef.current = new Phaser.Game({
+    type: Phaser.AUTO,
+    parent: phaserContainerRef.current,
+    width: width,  // use the updated width
+    height: height,  // use the updated height
+    scene: [MyScene],
+  });
+
+    // gameRef.current = gameRef.current;
 
     // Clean up the Phaser game instance when the component unmounts
     return () => {
-      game.destroy(true);
+      gameRef.current.destroy(true);
     };
-  }, [seed]); // Empty dependency array ensures the effect runs only once
+  }, [size, seed]); // Empty dependency array ensures the effect runs only once
 
   
 
   return (
     <>
-      <button >Restart Scene</button>
-      <div ref={phaserContainerRef} style={{ width: "100%", height: "100%" }} />
+      <div className={s.mapContainer}>
+        <div className={s.settings}>
+          <div className={s.imageContainer}></div>
+          <button onClick={rerenderCanvas} className={s.resetMapBtn}>
+            Reset Map
+          </button>
+          <SizeSelector size={size} handleSizeChange={handleSizeChange} />
+        </div>
+        <div ref={phaserContainerRef} style={{ width: "100%", height: "100%" }} />
+      </div>
     </>
   );
 };

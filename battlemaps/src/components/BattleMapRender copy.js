@@ -39,10 +39,11 @@ const cols = 50;
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
   const [rerenderTrigger, setRerenderTrigger] = useState(0);
+  const [renderTriggered, setRenderTriggered] = useState(false);
   const [noiseOffset, setNoiseOffset] = useState(0);
   const containerRef = useRef();
-  const myP5 = useRef();
   const sketchRef = useRef();
+  const myP5 = useRef();
 
   const [tiles, setTiles] = useState(() => {
     const arr = new Array(rows);
@@ -51,6 +52,8 @@ const BattleMapRender = (props) => {
     }
     return arr;
   });
+
+  const sketchProps = { tiles };
 
   const handleSizeChange = (event) => {
     setSize(event.target.value);
@@ -94,6 +97,7 @@ const BattleMapRender = (props) => {
   //Initial render and nosie generation for tile
   useEffect(() => {
     let width, height;
+    setRenderTriggered(true);
 
     switch (size) {
       case "small":
@@ -119,57 +123,74 @@ const BattleMapRender = (props) => {
       myP5.current.remove();
     }
 
-    myP5.current = new p5((p) => {
-      let imgGrass;
-      let imgDirt;
+    myP5.current = new p5(
+      (p) => {
+        let imgGrass;
+        let imgDirt;
 
-      p.preload = () => {
-        imgGrass = p.loadImage(grass);
-        imgDirt = p.loadImage(dirt);
-      };
+        p.preload = () => {
+          imgGrass = p.loadImage(grass);
+          imgDirt = p.loadImage(dirt);
+        };
 
-      p.setup = () => {
-        p.createCanvas(width, height);
-        p.noLoop();
-        containerRef.current.appendChild(p.canvas);
-      };
+        p.setup = () => {
+          const canvas = p.createCanvas(width, height);
+          canvas.parent(containerRef.current);
+          p.noLoop();
+        };
 
-      p.draw = () => {
-        p.background(220);
-        p.blendMode(p.BLEND);
-        for (let i = 0; i < tilesX; i++) {
-          for (let j = 0; j < tilesY; j++) {
-            let noiseVal = p.noise(
-              i * 0.1 + noiseOffset,
-              j * 0.1 + noiseOffset
-            );
+        p.draw = () => {
+          p.background(220);
+          for (let i = 0; i < tilesX; i++) {
+            for (let j = 0; j < tilesY; j++) {
+                
+                let noiseVal = p.noise(
+                  i * 0.1 + noiseOffset,
+                  j * 0.1 + noiseOffset
+                );
 
-            if (noiseVal < 0.5) {
-              p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
-            } else {
-              p.image(imgDirt, i * tileSize, j * tileSize, tileSize, tileSize);
-            }
-          }
-        }
-      };
-
-      p.remove = (() => {
-        const originalRemove = p.remove;
-        return () => {
-          originalRemove.call(p);
-          if (containerRef.current.firstChild) {
-            containerRef.current.firstChild.remove();
+                if (noiseVal < 0.5) {
+                  p.image(
+                    imgGrass,
+                    i * tileSize,
+                    j * tileSize,
+                    tileSize,
+                    tileSize
+                  );
+                } else {
+                  p.image(
+                    imgDirt,
+                    i * tileSize,
+                    j * tileSize,
+                    tileSize,
+                    tileSize
+                  );
+                }
+              }
+            
           }
         };
-      })();
-    });
+
+        p.remove = (() => {
+          const originalRemove = p.remove;
+          return () => {
+            originalRemove.call(p);
+            if (containerRef.current.firstChild) {
+              containerRef.current.firstChild.remove();
+            }
+          };
+        })();
+      },
+      containerRef.current,
+      sketchProps
+    );
 
     return () => {
       if (myP5.current) {
         myP5.current.remove();
       }
     };
-  }, [size, rerenderTrigger]);
+  }, [size, rerenderTrigger, tiles, noiseOffset]);
 
   //Check touching tiles
   useEffect(() => {
@@ -296,125 +317,63 @@ const BattleMapRender = (props) => {
       row.map((tile) => {
         if (Object.keys(tile.touching).length > 0) {
           let replacementTile;
-          function replaceTile(replacement) {
-            tile = createNewTile(replacement);
-          }
-          if (tile.touching.grass) {
-            const combinations = [
-              {
-                directions: [
-                  "top",
-                  "topRight",
-                  "right",
-                  "bottomRight",
-                  "bottom",
-                  "bottomLeft",
-                  "left",
-                  "topLeft",
-                ],
-                replacement: "replacement1",
-              },
-              {
-                directions: [
-                  "top",
-                  "topRight",
-                  "right",
-                  "bottomRight",
-                  "bottom",
-                  "bottomLeft",
-                  "left",
-                ],
-                replacement: "replacement2",
-              },
-              {
-                directions: [
-                  "top",
-                  "topRight",
-                  "right",
-                  "bottomRight",
-                  "bottom",
-                  "bottomLeft",
-                ],
-                replacement: "replacement3",
-              },
-              {
-                directions: [
-                  "top",
-                  "topRight",
-                  "right",
-                  "bottomRight",
-                  "bottom",
-                ],
-                replacement: "replacement4",
-              },
-              {
-                directions: ["top", "topRight", "right", "bottomRight"],
-                replacement: "replacement5",
-              },
-              {
-                directions: ["top", "topRight", "right"],
-                replacement: "replacement6",
-              },
-              { directions: ["top", "topRight"], replacement: "replacement7" },
-              { directions: ["top"], replacement: "replacement8" },
-              { directions: ["topLeft"], replacement: "replacement9" },
-              { directions: ["left", "topLeft"], replacement: "replacement10" },
-              {
-                directions: ["left", "bottomLeft", "topLeft"],
-                replacement: "replacement11",
-              },
-              {
-                directions: ["left", "bottomLeft", "bottom", "topLeft"],
-                replacement: "replacement12",
-              },
-              {
-                directions: [
-                  "left",
-                  "bottomLeft",
-                  "bottom",
-                  "bottomRight",
-                  "topLeft",
-                ],
-                replacement: "replacement13",
-              },
-              {
-                directions: [
-                  "left",
-                  "bottomLeft",
-                  "bottom",
-                  "bottomRight",
-                  "right",
-                  "topLeft",
-                ],
-                replacement: "replacement14",
-              },
-              {
-                directions: [
-                  "left",
-                  "bottomLeft",
-                  "bottom",
-                  "bottomRight",
-                  "right",
-                ],
-                replacement: "replacement15",
-              },
-              {
-                directions: ["left", "bottomLeft", "bottom", "bottomRight"],
-                replacement: "replacement16",
-              },
-              {
-                directions: ["left", "bottomLeft", "bottom"],
-                replacement: "replacement17",
-              },
-              {
-                directions: ["left", "bottomLeft"],
-                replacement: "replacement18",
-              },
-              { directions: ["bottomLeft"], replacement: "replacement19" },
-              { directions: [], replacement: "replacement20" },
-            ];
 
-            for (const combination of combinations) {
+          function replaceTile(replacement) {
+            replacementTile = createNewTile(replacement);
+          }
+          const directions = [
+            "left",
+            "right",
+            "top",
+            "bottom",
+            "bottomLeft",
+            "bottomRight",
+            "topLeft",
+            "topRight",
+          ];
+
+          // Recursive function to generate combinations
+          function generateCombinations(
+            prefix,
+            remainingDirections,
+            combinations
+          ) {
+            if (remainingDirections.length === 0) {
+              combinations.push(prefix);
+              return;
+            }
+
+            const currentDirection = remainingDirections[0];
+            const newPrefix = [...prefix, currentDirection];
+            generateCombinations(
+              newPrefix,
+              remainingDirections.slice(1),
+              combinations
+            );
+            generateCombinations(
+              prefix,
+              remainingDirections.slice(1),
+              combinations
+            );
+          }
+
+          const combinations = [];
+          generateCombinations([], directions, combinations);
+
+          // Assign replacement values to the combinations
+          const replacements = Array.from(
+            { length: combinations.length },
+            (_, i) => `replacement${i + 1}`
+          );
+          const combinationsWithReplacements = combinations.map(
+            (directions, index) => ({
+              directions,
+              replacement: replacements[index],
+            })
+          );
+
+          if (tile.touching.grass) {
+            for (const combination of combinationsWithReplacements) {
               if (
                 combination.directions.every(
                   (direction) => tile.touching.grass[direction]
@@ -431,8 +390,8 @@ const BattleMapRender = (props) => {
         return tile; // Return original tile if it's not touching any different tiles
       })
     );
-    // setTiles(replacementTiles);
-  }, [tiles]);
+    setTiles(replacementTiles);
+  }, [renderTriggered]);
 
   //   useEffect(() => {
   //     console.log(tiles);

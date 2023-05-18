@@ -39,10 +39,11 @@ const cols = 50;
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
   const [rerenderTrigger, setRerenderTrigger] = useState(0);
+  const [renderTriggered, setRenderTriggered] = useState(false);
   const [noiseOffset, setNoiseOffset] = useState(0);
   const containerRef = useRef();
-  const myP5 = useRef();
   const sketchRef = useRef();
+  const myP5 = useRef();
 
   const [tiles, setTiles] = useState(() => {
     const arr = new Array(rows);
@@ -51,6 +52,8 @@ const BattleMapRender = (props) => {
     }
     return arr;
   });
+
+  const sketchProps = { tiles };
 
   const handleSizeChange = (event) => {
     setSize(event.target.value);
@@ -94,6 +97,7 @@ const BattleMapRender = (props) => {
   //Initial render and nosie generation for tile
   useEffect(() => {
     let width, height;
+    setRenderTriggered(true);
 
     switch (size) {
       case "small":
@@ -119,57 +123,74 @@ const BattleMapRender = (props) => {
       myP5.current.remove();
     }
 
-    myP5.current = new p5((p) => {
-      let imgGrass;
-      let imgDirt;
+    myP5.current = new p5(
+      (p) => {
+        let imgGrass;
+        let imgDirt;
 
-      p.preload = () => {
-        imgGrass = p.loadImage(grass);
-        imgDirt = p.loadImage(dirt);
-      };
+        p.preload = () => {
+          imgGrass = p.loadImage(grass);
+          imgDirt = p.loadImage(dirt);
+        };
 
-      p.setup = () => {
-        p.createCanvas(width, height);
-        p.noLoop();
-        containerRef.current.appendChild(p.canvas);
-      };
+        p.setup = () => {
+          const canvas = p.createCanvas(width, height);
+          canvas.parent(containerRef.current);
+          p.noLoop();
+        };
 
-      p.draw = () => {
-        p.background(220);
-        p.blendMode(p.BLEND);
-        for (let i = 0; i < tilesX; i++) {
-          for (let j = 0; j < tilesY; j++) {
-            let noiseVal = p.noise(
-              i * 0.1 + noiseOffset,
-              j * 0.1 + noiseOffset
-            );
+        p.draw = () => {
+          p.background(220);
+          for (let i = 0; i < tilesX; i++) {
+            for (let j = 0; j < tilesY; j++) {
+                
+                let noiseVal = p.noise(
+                  i * 0.1 + noiseOffset,
+                  j * 0.1 + noiseOffset
+                );
 
-            if (noiseVal < 0.5) {
-              p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
-            } else {
-              p.image(imgDirt, i * tileSize, j * tileSize, tileSize, tileSize);
-            }
-          }
-        }
-      };
-
-      p.remove = (() => {
-        const originalRemove = p.remove;
-        return () => {
-          originalRemove.call(p);
-          if (containerRef.current.firstChild) {
-            containerRef.current.firstChild.remove();
+                if (noiseVal < 0.5) {
+                  p.image(
+                    imgGrass,
+                    i * tileSize,
+                    j * tileSize,
+                    tileSize,
+                    tileSize
+                  );
+                } else {
+                  p.image(
+                    imgDirt,
+                    i * tileSize,
+                    j * tileSize,
+                    tileSize,
+                    tileSize
+                  );
+                }
+              }
+            
           }
         };
-      })();
-    });
+
+        p.remove = (() => {
+          const originalRemove = p.remove;
+          return () => {
+            originalRemove.call(p);
+            if (containerRef.current.firstChild) {
+              containerRef.current.firstChild.remove();
+            }
+          };
+        })();
+      },
+      containerRef.current,
+      sketchProps
+    );
 
     return () => {
       if (myP5.current) {
         myP5.current.remove();
       }
     };
-  }, [size, rerenderTrigger]);
+  }, [size, rerenderTrigger, tiles, noiseOffset]);
 
   //Check touching tiles
   useEffect(() => {
@@ -246,8 +267,6 @@ const BattleMapRender = (props) => {
     new p5(sketch);
   }, [rerenderTrigger]);
 
-
-
   useEffect(() => {
     function createNewTile(replacement) {
       switch (replacement) {
@@ -295,13 +314,13 @@ const BattleMapRender = (props) => {
     }
 
     let replacementTiles = tiles.map((row) =>
-    row.map((tile) => {
-      if (Object.keys(tile.touching).length > 0) {
-        let replacementTile;
+      row.map((tile) => {
+        if (Object.keys(tile.touching).length > 0) {
+          let replacementTile;
 
-        function replaceTile(replacement) {
-          replacementTile = createNewTile(replacement);
-        }
+          function replaceTile(replacement) {
+            replacementTile = createNewTile(replacement);
+          }
           const directions = [
             "left",
             "right",
@@ -355,7 +374,11 @@ const BattleMapRender = (props) => {
 
           if (tile.touching.grass) {
             for (const combination of combinationsWithReplacements) {
-              if (combination.directions.every(direction => tile.touching.grass[direction])) {
+              if (
+                combination.directions.every(
+                  (direction) => tile.touching.grass[direction]
+                )
+              ) {
                 replaceTile(combination.replacement);
                 break; // Exit the loop if a match is found
               }
@@ -367,8 +390,8 @@ const BattleMapRender = (props) => {
         return tile; // Return original tile if it's not touching any different tiles
       })
     );
-    // setTiles(replacementTiles);
-  }, [tiles]);
+    setTiles(replacementTiles);
+  }, [renderTriggered]);
 
   //   useEffect(() => {
   //     console.log(tiles);

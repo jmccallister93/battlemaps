@@ -1,5 +1,6 @@
 import s from "../style/main.module.scss";
 import BattleMapRender from "../components/BattleMapRender";
+import PhaserScene from "../components/PhaserScene";
 
 const MainPage = (props) => {
   return (
@@ -9,7 +10,7 @@ const MainPage = (props) => {
         <h2>Where you can generate Battlemaps based on your specific needs</h2>
 
  
-          <BattleMapRender />
+          <PhaserScene />
      
       </div>
     </>
