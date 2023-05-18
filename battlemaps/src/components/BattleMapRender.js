@@ -5,6 +5,10 @@ import dirt from "../assets/DirtTile/dirtTileMain.png";
 import p5 from "p5";
 import { useState, useEffect, useRef } from "react";
 
+const tileSize = 20;
+const rows = 50;
+const cols = 50;
+
 const BattleMapRender = (props) => {
   const [size, setSize] = useState("medium");
   const [rerenderTrigger, setRerenderTrigger] = useState(0);
@@ -13,13 +17,21 @@ const BattleMapRender = (props) => {
   const myP5 = useRef();
   const sketchRef = useRef();
 
+  const [tiles, setTiles] = useState(() => {
+    const arr = new Array(rows);
+    for (let i = 0; i < rows; i++) {
+      arr[i] = new Array(cols);
+    }
+    return arr;
+  });
+
   const handleSizeChange = (event) => {
     setSize(event.target.value);
   };
 
   const rerenderCanvas = () => {
     setRerenderTrigger((prevTrigger) => prevTrigger + 1);
-    setNoiseOffset(Math.random() * 10000); 
+    setNoiseOffset(Math.random() * 10000);
   };
 
   const getSizeWidth = () => {
@@ -52,90 +64,136 @@ const BattleMapRender = (props) => {
 
   const tileSize = 20; // change to match your tile size
 
+  //   useEffect(() => {
+  //     let width, height;
+
+  //     switch (size) {
+  //       case "small":
+  //         width = 560;
+  //         height = 560;
+  //         break;
+  //       case "large":
+  //         width = 1280;
+  //         height = 960;
+  //         break;
+  //       default: // medium size
+  //         width = 960;
+  //         height = 750;
+  //     }
+
+  //     const tilesX = width / tileSize;
+  //     const tilesY = height / tileSize;
+
+  //     containerRef.current.style.width = `${width}px`;
+  //     containerRef.current.style.height = `${height}px`;
+
+  //     if (myP5.current) {
+  //       myP5.current.remove();
+  //     }
+
+  //     myP5.current = new p5((p) => {
+  //       let imgGrass;
+  //       let imgDirt;
+
+  //       p.preload = () => {
+  //         imgGrass = p.loadImage(grass);
+  //         imgDirt = p.loadImage(dirt);
+  //       };
+
+  //       p.setup = () => {
+  //         p.createCanvas(width, height);
+  //         p.noLoop();
+  //         containerRef.current.appendChild(p.canvas);
+  //       };
+
+  //       p.draw = () => {
+  //         p.background(220);
+  //         p.blendMode(p.BLEND);
+  //         for (let i = 0; i < tilesX; i++) {
+  //           for (let j = 0; j < tilesY; j++) {
+  //             let noiseVal = p.noise((i * 0.1) + noiseOffset, (j * 0.1) + noiseOffset);
+  //             if (noiseVal < 0.5) {
+  //               p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
+  //             } else {
+  //               p.image(imgDirt, i * tileSize, j * tileSize, tileSize, tileSize);
+  //             }
+  //           }
+  //         }
+  //       };
+
+  //       p.remove = (() => {
+  //         const originalRemove = p.remove;
+  //         return () => {
+  //           originalRemove.call(p);
+  //           if (containerRef.current.firstChild) {
+  //             containerRef.current.firstChild.remove();
+  //           }
+  //         };
+  //       })();
+  //     });
+
+  //     return () => {
+  //       if (myP5.current) {
+  //         myP5.current.remove();
+  //       }
+  //     };
+  //   }, [size, rerenderTrigger]);
+
   useEffect(() => {
-    let width, height;
-
-    switch (size) {
-      case "small":
-        width = 560;
-        height = 560;
-        break;
-      case "large":
-        width = 1280;
-        height = 960;
-        break;
-      default: // medium size
-        width = 960;
-        height = 750;
-    }
-
-    const tilesX = width / tileSize;
-    const tilesY = height / tileSize;
-
-    containerRef.current.style.width = `${width}px`;
-    containerRef.current.style.height = `${height}px`;
-
-    if (myP5.current) {
-      myP5.current.remove();
-    }
-
-    myP5.current = new p5((p) => {
-      let imgGrass;
-      let imgDirt;
-
-      p.preload = () => {
-        imgGrass = p.loadImage(grass);
-        imgDirt = p.loadImage(dirt);
-      };
-
+    const sketch = (p) => {
       p.setup = () => {
-        p.createCanvas(width, height);
+        p.createCanvas(1, 1);
         p.noLoop();
-        containerRef.current.appendChild(p.canvas);
-      };
 
-      p.draw = () => {
-        p.background(220);
-        for (let i = 0; i < tilesX; i++) {
-          for (let j = 0; j < tilesY; j++) {
-            let noiseVal = p.noise((i * 0.1) + noiseOffset, (j * 0.1) + noiseOffset);
-            if (noiseVal < 0.5) {
-              p.image(imgGrass, i * tileSize, j * tileSize, tileSize, tileSize);
-            } else {
-              p.image(imgDirt, i * tileSize, j * tileSize, tileSize, tileSize);
-            }
+        const newTiles = [...tiles];
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const noiseVal = p.noise(i * 0.1, j * 0.1);
+            newTiles[i][j] = noiseVal < 0.5 ? "grass" : "dirt";
           }
         }
+        setTiles(newTiles);
       };
-
-      p.remove = (() => {
-        const originalRemove = p.remove;
-        return () => {
-          originalRemove.call(p);
-          if (containerRef.current.firstChild) {
-            containerRef.current.firstChild.remove();
-          }
-        };
-      })();
-    });
-
-    return () => {
-      if (myP5.current) {
-        myP5.current.remove();
-      }
     };
-  }, [size, rerenderTrigger]);
+
+    new p5(sketch);
+  }, []);
+
+  const tileGridDisplay = (
+    <>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${cols}, ${tileSize}px)`,
+        }}
+      >
+        {tiles.flat().map((tile, index) => (
+          <div
+            key={index}
+            style={{
+              width: tileSize,
+              height: tileSize,
+              backgroundColor:
+                tile === "grass" ? "rgb(68,111,20)" : "rgb(68,48,22)",
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
 
   return (
     <>
       <div className={s.mapContainer}>
         <div className={s.settings}>
+          <div class={s.imageContainer}></div>
           <button onClick={rerenderCanvas} className={s.resetMapBtn}>
             Reset Map
           </button>
           <SizeSelector size={size} handleSizeChange={handleSizeChange} />
         </div>
-        <div ref={containerRef} />
+        {/* <div ref={containerRef} /> */}
+        {tileGridDisplay}
       </div>
     </>
   );
