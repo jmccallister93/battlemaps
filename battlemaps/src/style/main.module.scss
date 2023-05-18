@@ -1,0 +1,13 @@
+.mainPageContainer {
+    height: 100vh; /* Adjust the height as needed */
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    flex-direction: column;
+  }
+
+.containerStyle{
+    width: 750px;
+    height: fit-content;
+    border: 1px solid black;
+  }
