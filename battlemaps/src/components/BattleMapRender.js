@@ -39,8 +39,10 @@ const BattleMapRender = (props) => {
 
   return (
     <>
-      <div className={s.settings}>
+      <div className={s.settingsContainer}>
+        <div className={s.settings}>
         <SizeSelector size={size} handleSizeChange={handleSizeChange} />
+        </div>
         <div className={s.sceneContainer}>
           <div style={containerStyle}>
             {/* Your component content */}

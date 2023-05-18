@@ -17,12 +17,12 @@
 
 .sizeRadio{
   display: flex;
-  justify-content: center; /* Horizontally center */
+  // justify-content: center; /* Horizontally center */
   flex-direction: column;
   align-items: flex-start;
 }
 
-.settings{
+.settingsContainer{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
