@@ -14,13 +14,10 @@ import edgeB from "../assets/GrassDirtEdges/edgeBottom.png";
 
 import edgeBsmallTL from "../assets/GrassDirtEdges/edgeBsmallTL.png";
 import edgeBsmallTR from "../assets/GrassDirtEdges/edgeBsmallTR.png";
-
 import edgeTsmallBL from "../assets/GrassDirtEdges/edgeTsmallBL.png";
 import edgeTsmallBR from "../assets/GrassDirtEdges/edgeTsmallBR.png";
-
 import edgeLsmallBR from "../assets/GrassDirtEdges/edgeLsmallBR.png";
 import edgeLsmallTR from "../assets/GrassDirtEdges/edgeLsmallTR.png";
-
 import edgeRsmallTL from "../assets/GrassDirtEdges/edgeRsmallTL.png";
 import edgeRsmallBL from "../assets/GrassDirtEdges/edgeRsmallBL.png";
 
@@ -183,22 +180,22 @@ const PhaserScene = (props) => {
         this.load.image("smallTRBL", smallTRBL);
         this.load.image("smallBLTL", smallBLTL);
 
-        this.load.image("edgeBsmallTL", edgeBsmallTL)
-        this.load.image("edgeBsmallTR", edgeBsmallTR)
+        this.load.image("edgeBsmallTL", edgeBsmallTL);
+        this.load.image("edgeBsmallTR", edgeBsmallTR);
 
-        this.load.image("edgeLsmallBR", edgeLsmallBR)
-        this.load.image("edgeLsmallTR", edgeLsmallTR)
+        this.load.image("edgeLsmallBR", edgeLsmallBR);
+        this.load.image("edgeLsmallTR", edgeLsmallTR);
 
-        this.load.image("edgeRsmallBL", edgeRsmallBL)
-        this.load.image("edgeRsmallTL", edgeRsmallTL)
+        this.load.image("edgeRsmallBL", edgeRsmallBL);
+        this.load.image("edgeRsmallTL", edgeRsmallTL);
 
-        this.load.image("edgeTsmallBL", edgeTsmallBL)
-        this.load.image("edgeTsmallBR", edgeTsmallBR)
+        this.load.image("edgeTsmallBL", edgeTsmallBL);
+        this.load.image("edgeTsmallBR", edgeTsmallBR);
 
-        this.load.image("edgeTsmallBRBL", edgeTsmallBRBL)
-        this.load.image("edgeBsmallTLTR", edgeBsmallTLTR)
-        this.load.image("edgeRsmallBLTL", edgeRsmallBLTL)
-        this.load.image("edgeLsmallTRBR", edgeLsmallTRBR)
+        this.load.image("edgeTsmallBRBL", edgeTsmallBRBL);
+        this.load.image("edgeBsmallTLTR", edgeBsmallTLTR);
+        this.load.image("edgeRsmallBLTL", edgeRsmallBLTL);
+        this.load.image("edgeLsmallTRBR", edgeLsmallTRBR);
 
         this.load.image("splitLR", splitLR);
         this.load.image("splitTB", splitTB);
@@ -484,8 +481,65 @@ const PhaserScene = (props) => {
                   tileGrid[row][col].type = newTileType;
                 } else if (
                   touching.grass.top &&
-                  touching.grass.left 
+                  touching.grass.bottomRight &&
+                  touching.grass.bottomLeft
                 ) {
+                  let newTileType = "edgeTsmallBRBL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.bottom &&
+                  touching.grass.topLeft &&
+                  touching.grass.topRight
+                ) {
+                  let newTileType = "edgeBsmallTLTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.right &&
+                  touching.grass.bottomLeft &&
+                  touching.grass.topLeft
+                ) {
+                  let newTileType = "edgeRsmallBLTL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.left &&
+                  touching.grass.topRight &&
+                  touching.grass.bottomRight
+                ) {
+                  let newTileType = "edgeLsmallTRBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.top && touching.grass.left) {
                   let newTileType = "cornerTL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -496,10 +550,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.top &&
-                  touching.grass.right 
-                ) {
+                } else if (touching.grass.top && touching.grass.right) {
                   let newTileType = "cornerTR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -510,10 +561,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottom &&
-                  touching.grass.left 
-                ) {
+                } else if (touching.grass.bottom && touching.grass.left) {
                   let newTileType = "cornerBL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -524,10 +572,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottom &&
-                  touching.grass.right 
-                ) {
+                } else if (touching.grass.bottom && touching.grass.right) {
                   let newTileType = "cornerBR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -538,10 +583,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.top &&
-                  touching.grass.bottom  
-                ) {
+                } else if (touching.grass.top && touching.grass.bottom) {
                   let newTileType = "splitTB";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -552,10 +594,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                }  else if (
-                  touching.grass.right &&
-                  touching.grass.left  
-                ) {
+                } else if (touching.grass.right && touching.grass.left) {
                   let newTileType = "splitLR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -566,9 +605,95 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                }else if (
-                  touching.grass.bottom 
-                ) {
+                } else if (touching.grass.bottom && touching.grass.topLeft) {
+                  let newTileType = "edgeBsmallTL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.bottom && touching.grass.topRight) {
+                  let newTileType = "edgeBsmallTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.top && touching.grass.bottomLeft) {
+                  let newTileType = "edgeTsmallBL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.top && touching.grass.bottomRight) {
+                  let newTileType = "edgeTsmallBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.left && touching.grass.bottomRight) {
+                  let newTileType = "edgeLsmallBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.left && touching.grass.topRight) {
+                  let newTileType = "edgeLsmallTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.right && touching.grass.topLeft) {
+                  let newTileType = "edgeRsmallTL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.right && touching.grass.bottomLeft) {
+                  let newTileType = "edgeRsmallBL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.bottom) {
                   let newTileType = "edgeB";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -579,9 +704,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.top 
-                ) {
+                } else if (touching.grass.top) {
                   let newTileType = "edgeT";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -592,9 +715,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.right 
-                ) {
+                } else if (touching.grass.right) {
                   let newTileType = "edgeR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -605,9 +726,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.left 
-                ) {
+                } else if (touching.grass.left) {
                   let newTileType = "edgeL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -620,63 +739,7 @@ const PhaserScene = (props) => {
                   tileGrid[row][col].type = newTileType;
                 } else if (
                   touching.grass.topLeft &&
-                  touching.grass.topRight  
-                ) {
-                  let newTileType = "smallTLTR";
-                  const tileX = col * tileSize;
-                  const tileY = row * tileSize;
-                  let newTile = this.add
-                    .image(tileX, tileY, newTileType)
-                    .setOrigin(0)
-                    .setScale(0.25)
-                    .setRotation();
-                  this.gameObjects.push(newTile);
-                  tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottomLeft &&
-                  touching.grass.bottomRight  
-                ) {
-                  let newTileType = "smallBLBR";
-                  const tileX = col * tileSize;
-                  const tileY = row * tileSize;
-                  let newTile = this.add
-                    .image(tileX, tileY, newTileType)
-                    .setOrigin(0)
-                    .setScale(0.25)
-                    .setRotation();
-                  this.gameObjects.push(newTile);
-                  tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.topRight &&
-                  touching.grass.bottomRight  
-                ) {
-                  let newTileType = "smallTRBR";
-                  const tileX = col * tileSize;
-                  const tileY = row * tileSize;
-                  let newTile = this.add
-                    .image(tileX, tileY, newTileType)
-                    .setOrigin(0)
-                    .setScale(0.25)
-                    .setRotation();
-                  this.gameObjects.push(newTile);
-                  tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottomLeft &&
-                  touching.grass.topRight  
-                ) {
-                  let newTileType = "smallTRBL";
-                  const tileX = col * tileSize;
-                  const tileY = row * tileSize;
-                  let newTile = this.add
-                    .image(tileX, tileY, newTileType)
-                    .setOrigin(0)
-                    .setScale(0.25)
-                    .setRotation();
-                  this.gameObjects.push(newTile);
-                  tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.topLeft &&
-                  touching.grass.bottomRight  
+                  touching.grass.bottomRight
                 ) {
                   let newTileType = "smallTLBR";
                   const tileX = col * tileSize;
@@ -690,7 +753,7 @@ const PhaserScene = (props) => {
                   tileGrid[row][col].type = newTileType;
                 } else if (
                   touching.grass.topRight &&
-                  touching.grass.bottomLeft  
+                  touching.grass.bottomLeft
                 ) {
                   let newTileType = "smallTRBL";
                   const tileX = col * tileSize;
@@ -702,9 +765,62 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                }  else if (
-                  touching.grass.topLeft &&
-                  touching.grass.bottomLeft  
+                } else if (
+                  touching.grass.bottomLeft &&
+                  touching.grass.bottomRight
+                ) {
+                  let newTileType = "smallBLBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.bottomLeft &&
+                  touching.grass.topRight
+                ) {
+                  let newTileType = "smallBLTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.topLeft && touching.grass.topRight) {
+                  let newTileType = "smallTLTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.topRight &&
+                  touching.grass.bottomRight
+                ) {
+                  let newTileType = "smallTRBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.bottomLeft &&
+                  touching.grass.topLeft
                 ) {
                   let newTileType = "smallBLTL";
                   const tileX = col * tileSize;
@@ -716,9 +832,102 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                }  else if (
-                  touching.grass.topRight 
+                } else if (touching.grass.topLeft && touching.grass.topRight) {
+                  let newTileType = "smallTLTR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.bottomLeft &&
+                  touching.grass.bottomRight
                 ) {
+                  let newTileType = "smallBLBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.topRight &&
+                  touching.grass.bottomRight
+                ) {
+                  let newTileType = "smallTRBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.bottomLeft &&
+                  touching.grass.topRight
+                ) {
+                  let newTileType = "smallTRBL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.topLeft &&
+                  touching.grass.bottomRight
+                ) {
+                  let newTileType = "smallTLBR";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.topRight &&
+                  touching.grass.bottomLeft
+                ) {
+                  let newTileType = "smallTRBL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (
+                  touching.grass.topLeft &&
+                  touching.grass.bottomLeft
+                ) {
+                  let newTileType = "smallBLTL";
+                  const tileX = col * tileSize;
+                  const tileY = row * tileSize;
+                  let newTile = this.add
+                    .image(tileX, tileY, newTileType)
+                    .setOrigin(0)
+                    .setScale(0.25)
+                    .setRotation();
+                  this.gameObjects.push(newTile);
+                  tileGrid[row][col].type = newTileType;
+                } else if (touching.grass.topRight) {
                   let newTileType = "smallTR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -729,9 +938,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.topLeft 
-                ) {
+                } else if (touching.grass.topLeft) {
                   let newTileType = "smallTL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -742,9 +949,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottomLeft 
-                ) {
+                } else if (touching.grass.bottomLeft) {
                   let newTileType = "smallBL";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -755,9 +960,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } else if (
-                  touching.grass.bottomRight 
-                ) {
+                } else if (touching.grass.bottomRight) {
                   let newTileType = "smallBR";
                   const tileX = col * tileSize;
                   const tileY = row * tileSize;
@@ -768,7 +971,7 @@ const PhaserScene = (props) => {
                     .setRotation();
                   this.gameObjects.push(newTile);
                   tileGrid[row][col].type = newTileType;
-                } 
+                }
                 // this.load.image("smallTLBR", smallTLBR);
                 // this.load.image("smallTRBL", smallTRBL);
               }
