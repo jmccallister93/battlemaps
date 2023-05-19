@@ -12,6 +12,18 @@ import edgeT from "../assets/GrassDirtEdges/edgeTop.png";
 import edgeR from "../assets/GrassDirtEdges/edgeRight.png";
 import edgeB from "../assets/GrassDirtEdges/edgeBottom.png";
 
+import edgeBsmallTL from "../assets/GrassDirtEdges/edgeBsmallTL.png";
+import edgeBsmallTR from "../assets/GrassDirtEdges/edgeBsmallTR.png";
+
+import edgeTsmallBL from "../assets/GrassDirtEdges/edgeTsmallBL.png";
+import edgeTsmallBR from "../assets/GrassDirtEdges/edgeTsmallBR.png";
+
+import edgeLsmallBR from "../assets/GrassDirtEdges/edgeLsmallBR.png";
+import edgeLsmallTR from "../assets/GrassDirtEdges/edgeLsmallTR.png";
+
+import edgeRsmallTL from "../assets/GrassDirtEdges/edgeRsmallTL.png";
+import edgeRsmallBL from "../assets/GrassDirtEdges/edgeRsmallBL.png";
+
 import cornerTL from "../assets/GrassDirtEdges/cornerTopLeft.png";
 import cornerBL from "../assets/GrassDirtEdges/cornerBottomLeft.png";
 import cornerTR from "../assets/GrassDirtEdges/cornerTopRight.png";
@@ -28,6 +40,11 @@ import smallBLTR from "../assets/GrassDirtEdges/smallBLTR.png";
 import smallTLTR from "../assets/GrassDirtEdges/smallTLTR.png";
 import smallTRBR from "../assets/GrassDirtEdges/smallTRBR.png";
 import smallBLTL from "../assets/GrassDirtEdges/smallBLTL.png";
+
+import edgeTsmallBRBL from "../assets/GrassDirtEdges/edgeTsmallBRBL.png";
+import edgeBsmallTLTR from "../assets/GrassDirtEdges/edgeBsmallTLTR.png";
+import edgeRsmallBLTL from "../assets/GrassDirtEdges/edgeRsmallBLTL.png";
+import edgeLsmallTRBR from "../assets/GrassDirtEdges/edgeLsmallTRBR.png";
 
 import splitLR from "../assets/GrassDirtEdges/splitLR.png";
 import splitTB from "../assets/GrassDirtEdges/splitTB.png";
@@ -166,7 +183,22 @@ const PhaserScene = (props) => {
         this.load.image("smallTRBL", smallTRBL);
         this.load.image("smallBLTL", smallBLTL);
 
-        
+        this.load.image("edgeBsmallTL", edgeBsmallTL)
+        this.load.image("edgeBsmallTR", edgeBsmallTR)
+
+        this.load.image("edgeLsmallBR", edgeLsmallBR)
+        this.load.image("edgeLsmallTR", edgeLsmallTR)
+
+        this.load.image("edgeRsmallBL", edgeRsmallBL)
+        this.load.image("edgeRsmallTL", edgeRsmallTL)
+
+        this.load.image("edgeTsmallBL", edgeTsmallBL)
+        this.load.image("edgeTsmallBR", edgeTsmallBR)
+
+        this.load.image("edgeTsmallBRBL", edgeTsmallBRBL)
+        this.load.image("edgeBsmallTLTR", edgeBsmallTLTR)
+        this.load.image("edgeRsmallBLTL", edgeRsmallBLTL)
+        this.load.image("edgeLsmallTRBR", edgeLsmallTRBR)
 
         this.load.image("splitLR", splitLR);
         this.load.image("splitTB", splitTB);
