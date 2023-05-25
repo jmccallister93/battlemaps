@@ -8,6 +8,8 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.4.0",
+    "fastapi": "^0.0.8",
     "p5": "^1.6.0",
     "phaser": "^3.60.0",
     "pixi.js": "^7.2.4",
