@@ -9,7 +9,7 @@ const MainPage = (props) => {
 
   const generateImage = async () => {
     // Make a POST request to your FastAPI server
-    const response = await axios.post("http://localhost:8000/generate/");
+    const response = await axios.post("http://localhost:8000/generate/", {seed: 42});
 
     // Get the base64 image from the response
     const base64Image = response.data.image;
@@ -17,6 +17,9 @@ const MainPage = (props) => {
     // Set the image source to be the base64 image
     setImgSrc(`data:image/png;base64,${base64Image}`);
   };
+
+  
+
   return (
     <>
       <div className={s.mainPageContainer}>
